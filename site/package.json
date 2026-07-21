@@ -26,6 +26,7 @@
     "tailwindcss": "^4.3.2",
     "typescript": "^7.0.2",
     "vite": "^8.1.4",
-    "vitest": "latest"
+    "vitest": "latest",
+    "@vitest/coverage-v8": "latest"
   }
 }
