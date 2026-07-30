@@ -4,7 +4,7 @@
   <img alt="Quarry — A bare-metal MEV arbitrage simulator" src="assets/banner-dark.svg">
 </picture>
 
-[![CI](https://github.com/Builder106/Quarry/actions/workflows/ci.yml/badge.svg)](https://github.com/Builder106/Quarry/actions/workflows/ci.yml)
+[![CI](https://github.com/Builder106/quarry/actions/workflows/ci.yml/badge.svg)](https://github.com/Builder106/quarry/actions/workflows/ci.yml)
 [![Solidity](https://img.shields.io/badge/solidity-0.8.28-blue.svg)](https://docs.soliditylang.org/en/v0.8.28/)
 [![Foundry](https://img.shields.io/badge/foundry-1.7-orange.svg)](https://book.getfoundry.sh/)
 [![Bun](https://img.shields.io/badge/bun-1.3-black.svg)](https://bun.sh)

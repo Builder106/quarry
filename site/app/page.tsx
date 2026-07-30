@@ -1,6 +1,6 @@
 import {DepthMeter} from "./depth-meter";
 
-const GITHUB_URL = "https://github.com/Builder106/Quarry";
+const GITHUB_URL = "https://github.com/Builder106/quarry";
 const DEMO_GIF_URL = "/demo.gif";
 
 /* Field-manifest tags — the four headline figures, treated as core sample

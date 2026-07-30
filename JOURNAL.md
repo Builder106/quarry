@@ -49,7 +49,7 @@ Live at https://quarry-pied.vercel.app (the alias) / https://quarry-if4sn0q25-sa
 Page structure: hero with the dark banner (auto-switches to light via `<picture>` + `prefers-color-scheme`), four-up stats row (188 B, 110k gas, 99.89% accuracy, 0 inventory), the 9-step pipeline as a numbered ordered list with circled-gold step markers, demo GIF in a bordered card, a two-column "what's in the repo" module grid, and a CTA + footer. Dark mode default; same `#0a0e16 / #fcc419` palette as the banner. The CSS uses Tailwind v4's `@theme` directive for the design tokens so everything stays one file.
 
 Both branches the user asked for in the conversation are now closed:
-- **GitHub**: https://github.com/Builder106/Quarry (CI green on every push)
+- **GitHub**: https://github.com/Builder106/quarry (CI green on every push)
 - **Deployed site**: https://quarry-pied.vercel.app (linked from the repo's homepage URL via `gh repo edit --homepage`)
 
 Two papercuts captured for next time:
@@ -75,9 +75,9 @@ The latter requires an Alchemy / Infura / dedicated-node URL — free public RPC
 
 V0 is complete. From here, follow-up work is either expanding scope (multi-hop paths, ETH-side variants, WETH/non-WETH base gas gate) or refining presentation (sponsor track wiring, screen-recorded portfolio video, blog post on the bare-metal Yul advantage).
 
-## 2026-05-27 — Published to github.com/Builder106/Quarry; first CI run green #milestone
+## 2026-05-27 — Published to github.com/Builder106/quarry; first CI run green #milestone
 
-Quarry is now public at https://github.com/Builder106/Quarry. Single first commit captures the entire V0 (everything since project kickoff in this session — 39 files, both off-chain and on-chain trees, plus assets/, docs, CI workflow). Repo metadata set via `gh repo create` and `gh repo edit`:
+Quarry is now public at https://github.com/Builder106/quarry. Single first commit captures the entire V0 (everything since project kickoff in this session — 39 files, both off-chain and on-chain trees, plus assets/, docs, CI workflow). Repo metadata set via `gh repo create` and `gh repo edit`:
 
 - Description: "A bare-metal MEV arbitrage bot — TypeScript mempool scanner + Yul executor + Aave V3 flashloans. 188 B runtime, 110k gas two-hop, 99.89% prediction accuracy."
 - Topics (12): `aave-v3`, `arbitrage`, `bare-metal`, `bun`, `defi`, `ethereum`, `flashloan`, `foundry`, `mev`, `typescript`, `uniswap-v2`, `yul`.
