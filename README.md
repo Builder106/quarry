@@ -48,13 +48,13 @@ sequenceDiagram
     Pool2->>Yul: transfer base
     Yul->>Yul: assert balanceAfter ≥ balanceBefore + minProfit
     Yul-->>Bundle: profit OR revert(0,0)
-```
+```text
 
 The executor is monolithic Yul — no Solidity, no function dispatcher, no ABI decoding. Calldata is a tightly packed byte string read directly via `calldataload`. Pool 1's output flows *directly* to pool 2 (the canonical UniV2 trick — pool 1 sends its output token to pool 2's reserve balance, skipping an intermediate ERC20 transfer through this contract and saving ~25k gas). A balance snapshot at entry and exit guards the trade: if the arbitrage window closes between detection and inclusion, the whole transaction reverts and only the base network fee is burned.
 
 ## Repo layout
 
-```
+```text
 Quarry/
 ├── contracts/                    # Foundry project — Yul executor + Solidity tests
 │   ├── src/Executor.yul          # 188 B runtime, V2 two-hop executor
@@ -76,7 +76,7 @@ Quarry/
 ├── JOURNAL.md                    # decision/incident log
 ├── CONTRIBUTING.md               # scope, perf gates, PR process
 └── LICENSE
-```
+```text
 
 The two trees are intentionally independent. They communicate via deployed contract address + ABI only — never via a shared TS package. See [JOURNAL.md](JOURNAL.md) for the rationale.
 
@@ -102,7 +102,7 @@ cd ../bot
 bun install
 bun run typecheck
 bun test                                 # 60 tests, 2,121 assertions
-```
+```text
 
 ## Demo: end-to-end against forked mainnet
 
@@ -119,12 +119,12 @@ anvil --fork-url https://ethereum-rpc.publicnode.com
 # Terminal 2 — run the pipeline
 cd bot
 bun run demo
-```
+```text
 
 <details>
 <summary><b>Full trace</b> — click to expand the verbatim output of <code>bun run demo</code></summary>
 
-```
+```json
 [demo] anvil reachable at http://localhost:8545
 [demo] bot account: 0xf39F…2266
 
@@ -170,7 +170,7 @@ bun run demo
 [demo] prediction accuracy: 99.89% of expected
 
 [demo] ✓ end-to-end flashloan-funded pipeline complete.
-```
+```text
 
 The 0.11% drift between net predicted and net realized is exactly the 2 bp safety margin baked into the calldata builder for Uniswap V2's K-invariant integer-arithmetic check — see [JOURNAL.md](JOURNAL.md) for why.
 
@@ -189,11 +189,11 @@ anvil --fork-url $ALCHEMY_URL --fork-block-number 15990000
 
 # Terminal 2
 cd bot && bun run replay
-```
+```text
 
 At any random recent block, the typical cross-DEX gap on WETH/USDC is well below the combined ~0.6% round-trip fee — competing MEV bots close real gaps within the same block they form. The script's diagnostic mode shows that:
 
-```
+```text
 ━━━ RESERVE SNAPSHOT ━━━
 [replay] UniV2  0xB4e16d…  USDC=9152516.072170 USDC  WETH=4449.682244 WETH
 [replay] Sushi  0x397FF1…  USDC=127338.484262 USDC  WETH=61.948146 WETH
@@ -206,7 +206,7 @@ At any random recent block, the typical cross-DEX gap on WETH/USDC is well below
 [replay] form. To find a real historical opportunity, pin anvil
 [replay] to a block of high volatility (large liquidations, mempool
 [replay] congestion, etc.) and re-run with archival RPC access.
-```
+```text
 
 Pinning `FORK_BLOCK` to a moment of high volatility (liquidation cascades, large mempool trades that landed without a back-runner) converts the diagnostic into a real historical-arb replay.
 
@@ -226,7 +226,7 @@ Snapshots checked into [`contracts/.gas-snapshot`](contracts/.gas-snapshot). PRs
 
 ## What's in V0 (and what isn't)
 
-**Works today**
+### Works today
 
 - Yul executor: chained two-hop swap on Uniswap-V2-shaped pools with balance-snapshot revert guard. Real-pool fork test green at 110k gas.
 - Scanner: WebSocket pending-tx → router filter → calldata decode → multicall reserves → back-run scoring (apply victim → solve optimal input) → 220-byte calldata.

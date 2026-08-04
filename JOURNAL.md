@@ -116,7 +116,7 @@ The bot now runs with zero inventory. `Executor.yul` grows a second entry point 
 
 The flashloan path:
 
-```
+```text
 bot → Aave.flashLoanSimple(executor, WETH, amount, params, 0)
        Aave transfers amount → executor
        Aave calls executor.executeOperation(WETH, amount, premium, bot, params)
@@ -131,13 +131,13 @@ bot → Aave.flashLoanSimple(executor, WETH, amount, params, 0)
            approve(Aave, amount + premium)
            return true
        Aave transferFrom(executor, Aave, amount + premium)
-```
+```text
 
 Six new Solidity tests in `ExecutorFlashloan.t.sol` covering profitable arb, insufficient profit revert, stranger-initiator revert, non-Aave caller revert, token-in mismatch revert, and gas snapshot (~128k against mocks, under the 200k ceiling). Mock Aave (`MockAaveV3Pool`) plus a `vm.etch` of its bytecode at the canonical Aave V3 mainnet address so the executor's hardcoded auth check passes against the mock. Bot side: `buildFlashloanCall(arb, executor)` wraps `buildExecutorCalldata` in a `flashLoanSimple` ABI-encoded call. `buildDirectCall(arb, executor)` preserves the V2 path. Five new TS tests for the wrapper.
 
 `demo.ts` now borrows from real Aave V3 instead of `setStorageAt`-faking the input. Run against forked-mainnet anvil:
 
-```
+```text
 ━━━ FLASHLOAN BUNDLE ━━━
 [demo] borrowing 5.301040 WETH from Aave V3 (0x8787…A4E2)
 [demo] Aave premium (5 bp on WETH): 0.002650 WETH
@@ -149,7 +149,7 @@ Six new Solidity tests in `ExecutorFlashloan.t.sol` covering profitable arb, ins
 [demo] net predicted profit:          0.558632 WETH
 [demo] net realized profit:           0.558046 WETH
 [demo] prediction accuracy:           99.89% of expected
-```
+```text
 
 Tx gas at 266k against real Aave + real Uniswap V2 + real Sushiswap pools is the honest end-to-end cost. The 110k from the V2 fork test was the executor's own work + the two pool swaps; the V3 number adds Aave's account-management overhead (the asset transfer, the executeOperation callback dispatch, the approve, and the transferFrom-back). All of it real on-chain work.
 
@@ -184,7 +184,7 @@ What's deferred for a polish-next pass: shields.io CI badge (waiting on the GitH
 
 `bot/scripts/demo.ts` ties the whole pipeline together against a forked-mainnet anvil. From scratch:
 
-```
+```json
 [demo] executor deployed at 0xabab79…64b6
 [demo] scored uniswap-v2 → sushiswap
 [demo]   amountIn:        5.284523 WETH
@@ -197,7 +197,7 @@ What's deferred for a polish-next pass: shields.io CI badge (waiting on the GitH
 [demo] executor's final WETH balance: 5.840824 WETH
 [demo] realized profit:  0.556301 WETH
 [demo] prediction accuracy: 99.89% of predicted
-```
+```text
 
 The 0.11% drift is exactly the safety margin we shave off both leg outputs to give Uniswap V2's K-invariant integer-arithmetic check some boundary slack — see incident below. The 99.89% match means the bot's off-chain math agrees with the on-chain executor's realized swap to within ~6 wei per unit per leg.
 

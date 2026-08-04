@@ -60,7 +60,7 @@ forge test --match-contract ExecutorForkTest -vvv
 cd ../bot
 bun install
 bun run typecheck
-```
+```text
 
 The mock test suite (`ExecutorTest`) runs in milliseconds without any RPC
 config and is what CI gates on. The fork suite (`ExecutorForkTest`) skips
