@@ -72,7 +72,7 @@ bytecode.
 ## Build and test
 
 | Command | What it does |
-|---|---|
+| --- | --- |
 | `forge build` (in `contracts/`) | Compiles Solidity + Yul, emits artifacts to `out/` |
 | `forge test -vvv` | Runs Solidity tests against the Yul contract; `-vvv` shows traces |
 | `forge test --gas-report` | Emits a per-function gas snapshot — gate against regression |

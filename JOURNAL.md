@@ -37,6 +37,7 @@ Top-level `contracts/` (Foundry, Yul + Solidity tests) and `bot/` (TypeScript, b
 User asked "pied?" about the original `quarry-pied.vercel.app` auto-alias — that's just Vercel's randomly-generated short suffix when `quarry.vercel.app` is taken across the platform. Took the recommendation to rename to `quarry-mev.vercel.app`.
 
 Three steps + one papercut:
+
 1. `vercel alias set quarry-if4sn0q25-sankofa-forge.vercel.app quarry-mev.vercel.app` — assigns the new alias. Succeeded in 401 ms.
 2. **Papercut**: `quarry-mev.vercel.app` returned HTTP 401 (deployment protection) — `sankofa-forge` is on a team plan where all *.vercel.app URLs require Vercel Auth except the project's *configured production domains*. The auto-alias `quarry-pied` had been auto-added as a configured domain by Vercel; the custom alias I added via `vercel alias set` was NOT. Fix: `vercel domains add quarry-mev.vercel.app` (single-arg form, since project is linked). After that, the URL returns 200. **How to apply:** on a team-plan project, custom aliases need `vercel domains add` (not just `vercel alias set`) to bypass deployment protection.
 3. Redeployed with `SITE_URL = "https://quarry-mev.vercel.app"` in `app/layout.tsx` so the OG + Twitter card metadata bake in the new canonical URL. Updated README badge, GitHub repo's homepage URL (`gh repo edit --homepage`).
@@ -44,15 +45,17 @@ Three steps + one papercut:
 
 ## 2026-05-27 — Quarry has a deployed site: quarry-pied.vercel.app #milestone
 
-Live at https://quarry-pied.vercel.app (the alias) / https://quarry-if4sn0q25-sankofa-forge.vercel.app (the direct deployment URL). Single static landing page in `site/` rooted on a separate Vercel project (`sankofa-forge/quarry`), built with Next.js 16 + Tailwind v4 CSS-first config — no shadcn, no client JS beyond Next's default React hydration. Build time: 15 s on Vercel's builders. Fully prerendered (`○ (Static)`), no functions, no edge config, nothing to monitor at runtime.
+Live at <https://quarry-pied.vercel.app> (the alias) / <https://quarry-if4sn0q25-sankofa-forge.vercel.app> (the direct deployment URL). Single static landing page in `site/` rooted on a separate Vercel project (`sankofa-forge/quarry`), built with Next.js 16 + Tailwind v4 CSS-first config — no shadcn, no client JS beyond Next's default React hydration. Build time: 15 s on Vercel's builders. Fully prerendered (`○ (Static)`), no functions, no edge config, nothing to monitor at runtime.
 
 Page structure: hero with the dark banner (auto-switches to light via `<picture>` + `prefers-color-scheme`), four-up stats row (188 B, 110k gas, 99.89% accuracy, 0 inventory), the 9-step pipeline as a numbered ordered list with circled-gold step markers, demo GIF in a bordered card, a two-column "what's in the repo" module grid, and a CTA + footer. Dark mode default; same `#0a0e16 / #fcc419` palette as the banner. The CSS uses Tailwind v4's `@theme` directive for the design tokens so everything stays one file.
 
 Both branches the user asked for in the conversation are now closed:
-- **GitHub**: https://github.com/Builder106/quarry (CI green on every push)
-- **Deployed site**: https://quarry-pied.vercel.app (linked from the repo's homepage URL via `gh repo edit --homepage`)
+
+- **GitHub**: <https://github.com/Builder106/quarry> (CI green on every push)
+- **Deployed site**: <https://quarry-pied.vercel.app> (linked from the repo's homepage URL via `gh repo edit --homepage`)
 
 Two papercuts captured for next time:
+
 - The Vercel project ended up under the `sankofa-forge` team scope rather than `builder106`. `vercel link --yes --project quarry` defaulted to whichever scope is "active" in the CLI's settings; I expected the personal scope. If the user wants it under their personal account instead, that's `vercel link --scope builder106 --project quarry` and a fresh deploy.
 - The first OG metadata used a placeholder `quarry-mev.vercel.app` URL. Fix was a one-line edit to `SITE_URL` in `app/layout.tsx` and a re-deploy. **How to apply:** when scaffolding a site whose final URL isn't known yet, leave SITE_URL as a TODO placeholder and re-deploy once known. Easier than guessing.
 
@@ -68,6 +71,7 @@ At HEAD (block 25189150 during this run): UniV2 implied price 2,056.89 USDC/WETH
 The script reuses the existing `getAmountOut`, `getOptimalInput` (amm.ts), `buildFlashloanCall` (bundle.ts), and `fetchChainFees` + `signExecutorTx` (sign.ts) — same primitives demo.ts uses, just without the synthetic victim swap. ~280 lines of TS total, no new src/ files needed.
 
 The framing is honest about what's possible without archival access:
+
 - *At HEAD*: educational gap-analysis tool that demonstrates the bot's math against real chain state.
 - *With archival RPC + a pinned `--fork-block-number`*: actual historical-arb replay that proves the bot would have caught a specific past opportunity.
 
@@ -77,13 +81,14 @@ V0 is complete. From here, follow-up work is either expanding scope (multi-hop p
 
 ## 2026-05-27 — Published to github.com/Builder106/quarry; first CI run green #milestone
 
-Quarry is now public at https://github.com/Builder106/quarry. Single first commit captures the entire V0 (everything since project kickoff in this session — 39 files, both off-chain and on-chain trees, plus assets/, docs, CI workflow). Repo metadata set via `gh repo create` and `gh repo edit`:
+Quarry is now public at <https://github.com/Builder106/quarry>. Single first commit captures the entire V0 (everything since project kickoff in this session — 39 files, both off-chain and on-chain trees, plus assets/, docs, CI workflow). Repo metadata set via `gh repo create` and `gh repo edit`:
 
 - Description: "A bare-metal MEV arbitrage bot — TypeScript mempool scanner + Yul executor + Aave V3 flashloans. 188 B runtime, 110k gas two-hop, 99.89% prediction accuracy."
 - Topics (12): `aave-v3`, `arbitrage`, `bare-metal`, `bun`, `defi`, `ethereum`, `flashloan`, `foundry`, `mev`, `typescript`, `uniswap-v2`, `yul`.
 - Visibility: PUBLIC.
 
 First CI run (26537198472) completed in ~17s wall-clock — both jobs green:
+
 - `contracts (forge)` in 16s: install Foundry → install forge-std → `forge build --sizes` → `forge test -vvv` (13 tests pass, 1 fork test skips without RPC).
 - `bot (bun)` in 17s: install Bun 1.3 → `bun install --frozen-lockfile` → `bun run typecheck` → `bun test` (65 tests, 2,132 assertions).
 
@@ -98,6 +103,7 @@ One CI warning worth noting for future-me: `actions/checkout@v4` runs on Node 20
 `assets/demo.gif` (137 KB, github-dark theme via `agg`) embeds at the top of the README's Demo section. Captures `bun run demo` end-to-end: anvil reachable → executor deploys → score (pre-victim reserves + the back-run prediction) → victim impersonation + swap → FLASHLOAN BUNDLE (borrows 5.3 WETH from real Aave V3) → VERIFY (net realized 0.558 WETH, 99.89% of predicted). Pipeline: `asciinema rec --command "bun run demo"` produces a `.cast` file (~3 KB JSON), `agg --theme github-dark --speed 1.5 --cols 110 --font-size 14` renders it to GIF. The agg output is ten visually-distinct frames (the deduplicator drops identical states, so a fast-running demo compresses cleanly), played at ~1 fps with a 3-second hold on the final frame. README's existing text-trace fallback updated under the same `<details>` block to match the new V3 flashloan run (previous trace was from the pre-flashloan V2 demo with `STAGE BACK-RUN INPUT` instead of `FLASHLOAN BUNDLE`).
 
 Reroll recipe for future-me — if the demo output changes:
+
 1. `anvil --fork-url https://ethereum-rpc.publicnode.com` (terminal 1)
 2. `curl … anvil_reset …` (clean state)
 3. `cd bot && asciinema rec /tmp/quarry-demo.cast --overwrite --command "bun run demo"`

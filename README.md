@@ -213,7 +213,7 @@ Pinning `FORK_BLOCK` to a moment of high volatility (liquidation cascades, large
 ## Performance gates
 
 | Surface | Gate | Current |
-|---|---|---|
+| --- | --- | --- |
 | Two-hop arb total gas (real pools) | **≤ 130,000** on forked mainnet | **110,780** |
 | Yul runtime bytecode size | **≤ 250 B** | **188 B** |
 | Mocks-test gas regression ceiling | **≤ 50,000** | 48,976 |
@@ -227,6 +227,7 @@ Snapshots checked into [`contracts/.gas-snapshot`](contracts/.gas-snapshot). PRs
 ## What's in V0 (and what isn't)
 
 **Works today**
+
 - Yul executor: chained two-hop swap on Uniswap-V2-shaped pools with balance-snapshot revert guard. Real-pool fork test green at 110k gas.
 - Scanner: WebSocket pending-tx → router filter → calldata decode → multicall reserves → back-run scoring (apply victim → solve optimal input) → 220-byte calldata.
 - Gas gate: refuses to surface opportunities where profit (in WETH terms) doesn't beat the bundle's gas cost at current gas prices.
@@ -234,6 +235,7 @@ Snapshots checked into [`contracts/.gas-snapshot`](contracts/.gas-snapshot). PRs
 - End-to-end demo runs against forked mainnet, asserts realized profit matches prediction within 1%.
 
 **Known V0 limitations** *(documented in [JOURNAL.md](JOURNAL.md))*
+
 - Scanner only scores the *first hop* of a victim's `path` — multi-hop paths fan out the search surface but aren't yet expanded.
 - Only `exactInForTokens` victim swaps trigger scoring; ETH-side variants (`swapExactETHForTokens`, etc.) decode but don't yet plumb `tx.value` through.
 - Gas gate only fires for WETH-base trades; non-WETH-base profits would need a WETH/baseToken conversion via a third reserve fetch.
