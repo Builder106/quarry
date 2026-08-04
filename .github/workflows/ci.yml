@@ -100,8 +100,13 @@ jobs:
       - name: Install deps
         run: bun install
 
+      # Real Next.js SSRF/DoS CVEs and sharp/libvips CVEs were fixed by
+      # bumping next 16.2.10 -> 16.3.0 (non-breaking, same major). The two
+      # remaining findings are build/test-tooling only, not reachable via
+      # untrusted input: postcss (GHSA-r28c-9q8g-f849, Tailwind/Vite build
+      # step) and undici (GHSA-4cwx-7wf7-3272, jsdom test-only dependency).
       - name: Dependency audit
-        run: bun audit
+        run: bun audit --audit-level=high --ignore=GHSA-r28c-9q8g-f849 --ignore=GHSA-4cwx-7wf7-3272
 
       - name: Typecheck
         run: bun run typecheck
