@@ -4,6 +4,10 @@
 > things happen — retrospectives need this raw material to land.
 > Reverse-chronological; one paragraph max per entry.
 
+## 2026-08-07 — MEV engineering specification and codebase feature audit #milestone
+
+Completed a full feature and benchmark audit across the Yul executor (`contracts/`), TypeScript mempool scanner (`bot/`), and Core Sample site (`site/`). Authored `docs/MEV_ENGINEERING.md` documenting the closed-form optimal input equation, Yul direct pair-to-pair gas optimizations, raw calldata unpacking, and gas benchmark ceilings (~111k gas baseline vs 130k ceiling). Added 3-hop triangular Yul execution routes and interactive mempool simulation site components to the roadmap.
+
 ## 2026-06-13 — Visual identity unified to "Core Sample" (favicon + banner) #decision
 
 The site got its "Core Sample" redesign (earth-toned mine-shaft palette, ore-gold accent) back in May, but the favicon was missing and the README/OG banner still carried the *retired* blue-slate + `#fcc419` scheme — so the tab icon, social card, and live site disagreed. Added a custom favicon (`site/app/icon.svg`) + Apple touch icon (`site/app/apple-icon.png`, 180×180 full-bleed) using the established quarry-pit nested-hexagon mark recolored to the live palette (shaft `#14110d`, ore-gold `#d4923a` core), via Next's App Router file convention. Then regenerated both banners (`assets/` for the README `<picture>`, `site/public/` for OG) in the same language: stratigraphic sediment rules + ore seam, heavy `QUARRY` wordmark, the matching hexagon mark, mono claim chips. Rasterized 1200×420 PNGs alongside and switched the OG/Twitter `og:image` from the SVG to the PNG — SVG og:images don't render on Twitter/Slack/Discord, so the social card was effectively blank before. One stray inconsistency left: the README shields badges still use `fcc419`.
