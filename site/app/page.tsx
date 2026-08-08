@@ -143,20 +143,32 @@ function StrataColumn() {
     );
 }
 
-/* Small inline brand mark used in the top nav. A picked-axe stylisation:
- * two crossed lines + a sample circle. Kept very small so it reads as a stamp. */
+/* Inline brand mark used in the top nav — the quarry-pit nested-hexagon mark matching the favicon. */
 function QuarryMark() {
     return (
         <svg
             aria-hidden
-            viewBox="0 0 32 32"
+            viewBox="0 0 64 64"
             className="h-7 w-7"
             fill="none"
         >
-            <circle cx="16" cy="16" r="14" stroke="var(--color-ore)" strokeWidth="1.5" />
-            <path d="M 9 9 L 23 23" stroke="var(--color-ore)" strokeWidth="1.5" />
-            <path d="M 23 9 L 9 23" stroke="var(--color-chalk)" strokeWidth="1.5" />
-            <circle cx="16" cy="16" r="2.5" fill="var(--color-ore)" />
+            <g fill="none" strokeLinejoin="round">
+                <polygon
+                    points="32,7 53.65,19.5 53.65,44.5 32,57 10.35,44.5 10.35,19.5"
+                    stroke="var(--color-ore-deep)"
+                    strokeWidth="3"
+                    opacity="0.75"
+                />
+                <polygon
+                    points="32,15 46.72,23.5 46.72,40.5 32,49 17.28,40.5 17.28,23.5"
+                    stroke="var(--color-ore)"
+                    strokeWidth="3.5"
+                />
+            </g>
+            <polygon
+                points="32,23 39.79,27.5 39.79,36.5 32,41 24.21,36.5 24.21,27.5"
+                fill="var(--color-ore)"
+            />
         </svg>
     );
 }
