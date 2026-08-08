@@ -187,7 +187,6 @@ export default function Home() {
                         <span className="font-mono text-sm tracking-[0.2em] text-[var(--color-chalk)]">
                             QUARRY
                         </span>
-                        <span className="readout hidden sm:inline">/ field op · V3 · 2026</span>
                     </div>
                     <nav className="flex items-center gap-6 text-sm">
                         <a href="#log" className="text-[var(--color-dust)] hover:text-[var(--color-ore)]">Drilling log</a>
