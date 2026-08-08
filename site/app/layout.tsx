@@ -29,12 +29,12 @@ const jetbrains = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "Quarry — A bare-metal MEV arbitrage simulator",
+    title: "Quarry",
     description:
         "Hybrid MEV arbitrage engine. TypeScript scanner watches Ethereum's mempool, Yul executor runs a two-hop cross-DEX arb in 188 bytes of bytecode. Aave V3 flashloans, 99.89% prediction accuracy on forked mainnet.",
     metadataBase: new URL(SITE_URL),
     openGraph: {
-        title: "Quarry — A bare-metal MEV arbitrage simulator",
+        title: "Quarry",
         description:
             "188 bytes of Yul. 110k gas on real Uniswap V2 + Sushiswap pools. Aave V3 flashloans, no inventory required.",
         url: SITE_URL,
@@ -44,7 +44,7 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: "summary_large_image",
-        title: "Quarry — A bare-metal MEV arbitrage simulator",
+        title: "Quarry",
         description: "188 B Yul. 110k gas. Aave V3 flashloans.",
         images: ["/banner-dark.png"],
     },
