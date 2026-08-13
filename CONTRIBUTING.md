@@ -23,13 +23,16 @@ opcode shaved off the on-chain leg widens the marginal profit envelope.
 ### Out of scope
 
 - **JIT liquidity, sandwich attacks on retail users, or any strategy that
+
   extracts value from individual victims.** Quarry targets *cross-DEX
   arbitrage* — closing price discrepancies the market would close anyway.
   This is the kind of MEV that's broadly considered net-positive for
   on-chain price efficiency. Anything predatory is a hard no.
+
 - Cross-chain MEV (LayerZero, Wormhole). One chain at a time.
 - Solana or non-EVM chains.
 - Production deployment with real capital. Quarry is a *simulator*, run
+
   against forked mainnet state. No mainnet broadcasts.
 
 ## Dev setup
@@ -37,7 +40,7 @@ opcode shaved off the on-chain leg widens the marginal profit envelope.
 Prerequisites:
 
 - macOS or Linux
-- Foundry (`brew install foundry` on macOS; otherwise `foundryup`)
+- Foundry (`brew install foundry`on macOS; otherwise`foundryup`)
 - Bun ≥ 1.3 (`brew install oven-sh/bun/bun`)
 - Node ≥ 22 (only for `pnpm`-installed dev deps; runtime is Bun)
 
@@ -47,16 +50,19 @@ cd Quarry
 cp .env.example .env   # then fill in MAINNET_RPC_URL for fork tests
 
 # On-chain side
+
 cd contracts
 forge install
 forge build
 forge test -vvv                                   # mock tests only
 
 # Fork tests against real Uniswap V2 + Sushiswap pools (needs MAINNET_RPC_URL)
+
 export $(cat ../.env | xargs)
 forge test --match-contract ExecutorForkTest -vvv
 
 # Off-chain side
+
 cd ../bot
 bun install
 bun run typecheck
@@ -73,11 +79,11 @@ bytecode.
 
 | Command | What it does |
 | --- | --- |
-| `forge build` (in `contracts/`) | Compiles Solidity + Yul, emits artifacts to `out/` |
-| `forge test -vvv` | Runs Solidity tests against the Yul contract; `-vvv` shows traces |
+| `forge build`(in`contracts/`) | Compiles Solidity + Yul, emits artifacts to `out/` |
+| `forge test -vvv`| Runs Solidity tests against the Yul contract;`-vvv` shows traces |
 | `forge test --gas-report` | Emits a per-function gas snapshot — gate against regression |
-| `forge snapshot` | Writes `.gas-snapshot` checked into git |
-| `bun run typecheck` (in `bot/`) | Strict TS typecheck, no emit |
+| `forge snapshot`| Writes`.gas-snapshot` checked into git |
+| `bun run typecheck`(in`bot/`) | Strict TS typecheck, no emit |
 | `bun test` | Runs the scanner unit tests |
 | `bun run scanner` | Starts the WebSocket mempool scanner |
 
@@ -85,14 +91,17 @@ bytecode.
 
 - **Executor gas budget — two complementary guards:**
   - *Mock path (CI-enforced).* The full two-hop swap through mocked pools must
+
     stay under **100,000 gas** — `Executor.t.sol::test_GasCeiling_TwoHop_WithMocks`,
     currently **~84.5k** (see `.gas-snapshot`). This is the gate every PR must
     keep green. The executor's own Yul body is only ~6k of it; the rest is the
     mocks' swap accounting.
+
   - *Real-pool path (fork test).* `ExecutorFork.t.sol::test_TwoHopRoundTrip_AgainstRealPools`
+
     runs the same path against live Uniswap V2 + Sushiswap WETH/USDC pools,
     whose own `swap()` gas dominates and is unavoidable. **Must stay under
-    130,000 gas** — measured baseline **110,957 (~111k)** on 2026-06-13
+    130,000 gas**— measured baseline**110,957 (~111k)** on 2026-06-13
     (mainnet fork at HEAD), so the ceiling carries ~17% headroom for
     block-to-block reserve variance. It's skipped unless `MAINNET_RPC_URL` is
     set, so it's not part of the default CI gate; re-measure / re-run with:
@@ -109,7 +118,9 @@ bytecode.
 
   Any PR that pushes either guard needs justification and a corresponding
   reduction elsewhere.
+
 - The scanner's mempool-tx-to-opportunity-decision latency must stay under
+
   20 ms at the p99 (measured on a 1-hour mainnet sample). Cross-DEX math
   hot path may not allocate.
 
@@ -117,23 +128,30 @@ bytecode.
 
 - Imperative mood, present tense ("add Yul revert guard", not "added").
 - Prefix with the area touched: `yul:`, `scanner:`, `flashbots:`, `infra:`,
+
   `docs:`, `journal:`.
+
 - One logical change per commit. If a commit touches both `contracts/`
+
   and `bot/`, the description should explain the cross-cut.
 
 ## PR process
 
 1. Branch from `main`. Branch names: `area/short-description`.
 2. PR title matches the would-be merge commit message.
-3. PR body has a **Why** section (one paragraph) and a **What changed**
+3. PR body has a **Why**section (one paragraph) and a**What changed**
+
    section (bullet list). No emoji headers, no AI-slop checklists.
+
 4. CI must be green. Gas snapshot diffs must be acknowledged in the PR.
 5. Squash-merge to `main`.
 
 ## What I'll close without merging
 
 - Solidity rewrites of the Yul contract "for readability." The whole point
+
   is the Yul.
+
 - Dependency-bump PRs from automation accounts.
 - PRs that touch `JOURNAL.md` — that's mine.
 - Strategies that target retail (see "out of scope" above).

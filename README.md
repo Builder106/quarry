@@ -85,21 +85,26 @@ The two trees are intentionally independent. They communicate via deployed contr
 ## Quick start
 
 ```bash
+
 # Toolchain (macOS)
+
 brew install foundry oven-sh/bun/bun
 
 # Clone + install deps
+
 git clone <repo-url>
 cd Quarry
 cp .env.example .env   # fill in MAINNET_RPC_URL for fork tests
 
 # On-chain side
+
 cd contracts
 forge install
 forge test                               # 7 mock tests, fork test skips without RPC
 MAINNET_RPC_URL=https://... forge test   # full suite incl. real-pool fork test
 
 # Off-chain side
+
 cd ../bot
 bun install
 bun run typecheck
@@ -115,10 +120,13 @@ The full pipeline runs against a local `anvil` fork — including the Aave V3 fl
 To reproduce locally:
 
 ```bash
+
 # Terminal 1 — fork mainnet at HEAD
+
 anvil --fork-url https://ethereum-rpc.publicnode.com
 
 # Terminal 2 — run the pipeline
+
 cd bot
 bun run demo
 ```text
@@ -178,18 +186,22 @@ The 0.11% drift between net predicted and net realized is exactly the 2 bp safet
 
 </details>
 
-### Historical-arb replay (`bun run replay`)
+## Historical-arb replay (`bun run replay`)
 
 A second script reads the current WETH/USDC reserves on Uniswap V2 + Sushiswap (no synthetic victim), runs the bot's standing-arb math in both possible round-trip directions, and either executes via Aave V3 flashloan when a real profitable gap exists, or prints a diagnostic gap analysis showing each direction's predicted loss-to-fees.
 
 ```bash
+
 # Terminal 1 — anvil at HEAD (no archival needed)
+
 anvil --fork-url https://ethereum-rpc.publicnode.com
 
 # Terminal 1, alternate — pin to a known-arb block (needs archival RPC)
+
 anvil --fork-url $ALCHEMY_URL --fork-block-number 15990000
 
 # Terminal 2
+
 cd bot && bun run replay
 ```text
 
@@ -216,8 +228,8 @@ Pinning `FORK_BLOCK` to a moment of high volatility (liquidation cascades, large
 
 | Surface | Gate | Current |
 | --- | --- | --- |
-| Two-hop arb total gas (real pools) | **≤ 130,000** on forked mainnet | **110,780** |
-| Yul runtime bytecode size | **≤ 250 B** | **188 B** |
+| Two-hop arb total gas (real pools) | **≤ 130,000**on forked mainnet |**110,780** |
+| Yul runtime bytecode size | **≤ 250 B**|**188 B** |
 | Mocks-test gas regression ceiling | **≤ 50,000** | 48,976 |
 | Scanner p99 tx-to-decision | **≤ 20 ms** on 1-hour sample | — (not yet benched) |
 | Scanner hot path | **0 heap allocations** per pending-tx event | — |
