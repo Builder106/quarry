@@ -4,6 +4,10 @@
 > things happen — retrospectives need this raw material to land.
 > Reverse-chronological; one paragraph max per entry.
 
+## 2026-08-14: Accessible plain-English documentation update #decision
+
+Updated the README headline, summary tagline, and introductory section to explain decentralized exchange arbitrage using a real-world store-to-store price matching analogy. Fixed the broken license badge anchor and removed em dashes while retaining the technical Yul opcode and gas performance benchmarks.
+
 ## 2026-08-07 — MEV engineering specification and codebase feature audit #milestone
 
 Completed a full feature and benchmark audit across the Yul executor (`contracts/`), TypeScript mempool scanner (`bot/`), and Core Sample site (`site/`). Authored `docs/MEV_ENGINEERING.md` documenting the closed-form optimal input equation, Yul direct pair-to-pair gas optimizations, raw calldata unpacking, and gas benchmark ceilings (~111k gas baseline vs 130k ceiling). Added 3-hop triangular Yul execution routes and interactive mempool simulation site components to the roadmap.

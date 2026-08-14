@@ -1,7 +1,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)"  srcset="assets/banner-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/banner-light.svg">
-  <img alt="Quarry — A bare-metal MEV arbitrage simulator" src="assets/banner-dark.svg">
+  <img alt="Quarry: A bare-metal MEV arbitrage simulator" src="assets/banner-dark.svg">
 </picture>
 
 [![CI](https://github.com/Builder106/quarry/actions/workflows/ci.yml/badge.svg)](https://github.com/Builder106/quarry/actions/workflows/ci.yml)
@@ -10,14 +10,18 @@
 [![Bun](https://img.shields.io/badge/bun-1.3-black.svg)](https://bun.sh)
 [![Yul runtime](https://img.shields.io/badge/runtime-188_B-d4923a.svg)](contracts/src/Executor.yul)
 [![Two-hop gas](https://img.shields.io/badge/two--hop_gas-110k-d4923a.svg)](contracts/test/ExecutorFork.t.sol)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)]# License
-
-MIT License
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](#license)
 [![Live site](https://img.shields.io/badge/site-quarry--mev.vercel.app-d4923a.svg)](https://quarry-mev.vercel.app)
 
-Quarry is a hybrid MEV arbitrage engine. A TypeScript scanner watches Ethereum's public mempool for swaps about to land on a Uniswap-V2-shaped DEX; for each candidate, it back-computes the price the victim will leave behind, runs a closed-form optimal-input solver against the post-victim reserves, and — if the round-trip profit beats both fees and gas — packs a 220-byte calldata payload, signs an EIP-1559 transaction, and wraps it in an `eth_sendBundle` envelope. The executor is a single Yul object, 188 bytes of runtime bytecode, that performs the full two-hop arbitrage and reverts atomically if the realized profit falls short. Every opcode shaved off the on-chain leg widens the marginal profit envelope — that's the engineering thesis.
+> **An automated currency price-matching bot.** Quarry spots temporary price differences across crypto exchanges and balances them instantly.
 
-> **Scope.** Quarry targets *cross-DEX arbitrage* — closing price gaps the market would close anyway, the kind of MEV broadly considered net-positive for on-chain price efficiency. Predatory strategies (sandwiches, JIT against retail) are out of scope. See [CONTRIBUTING.md](CONTRIBUTING.md#out-of-scope).
+## 💡 What is Quarry?
+
+If a store across town sells an item for $10 and another buys it for $12, a quick courier can make a $2 profit while helping keep prices fair. Quarry monitors decentralized exchanges around the clock, spotting momentary price differences and executing instant trades with zero upfront capital using flash loans.
+
+Quarry operates as a hybrid MEV arbitrage engine. A TypeScript scanner watches Ethereum's public mempool for swaps about to land on a Uniswap-V2-shaped DEX. For each candidate, it computes the post-trade price impact, runs a closed-form optimal-input solver against the reserves, and packs a 220-byte calldata payload whenever round-trip profit covers fees and gas. The executor is a custom Yul contract (188 bytes of runtime bytecode) that performs the full two-hop arbitrage and reverts atomically if realized profit falls short.
+
+> **Scope:** Quarry targets cross-DEX arbitrage (closing price gaps to improve market price efficiency). Predatory strategies such as sandwiches or JIT attacks against retail traders are strictly out of scope. See [CONTRIBUTING.md](CONTRIBUTING.md#out-of-scope).
 
 ## How it works
 
