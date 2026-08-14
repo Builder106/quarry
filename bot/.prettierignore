@@ -1,0 +1,10 @@
+node_modules/
+*.config.*
+scripts/
+*.lock
+*.log
+.env*
+*.md
+*.json
+*.yaml
+*.yml

@@ -1,0 +1,11 @@
+.next/
+node_modules/
+*.config.*
+out/
+*.lock
+*.log
+.env*
+*.md
+*.json
+*.yaml
+*.yml
