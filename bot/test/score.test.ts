@@ -1,8 +1,8 @@
 import { describe, expect, test } from 'bun:test';
 import type { Address } from 'viem';
 import type { DecodedSwap } from '../src/decode';
-import { scoreFromRawReserves } from '../src/score';
 import type { RawReserves } from '../src/reserves';
+import { scoreFromRawReserves } from '../src/score';
 
 const WETH: Address = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2';
 const USDC: Address = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48';

@@ -8,13 +8,14 @@ import prettier from 'eslint-config-prettier'
 export default tseslint.config(
   js.configs.recommended,
   ...tseslint.configs.recommended,
-  react.configs.recommended,
-  reactHooks.configs.recommended,
+  react.configs.flat.recommended,
   {
     plugins: {
+      'react-hooks': reactHooks,
       '@next/next': nextPlugin,
     },
     rules: {
+      ...reactHooks.configs.recommended.rules,
       ...nextPlugin.configs.recommended.rules,
     },
   },
@@ -22,7 +23,7 @@ export default tseslint.config(
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
       parserOptions: {
-        ecmaVersion: 'esnext',
+        ecmaVersion: 'latest',
         sourceType: 'module',
         ecmaFeatures: { jsx: true },
       },

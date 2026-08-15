@@ -4,8 +4,8 @@
 // — the caller fetches them at the right moment, typically just before
 // constructing the bundle, since both change with every block.
 
-import { privateKeyToAccount } from 'viem/accounts';
 import type { Address, Hex, PublicClient } from 'viem';
+import { privateKeyToAccount } from 'viem/accounts';
 
 export type ChainFees = {
   chainId: number;

@@ -9,7 +9,7 @@ export default tseslint.config(
     files: ['**/*.ts'],
     languageOptions: {
       parserOptions: {
-        ecmaVersion: 'esnext',
+        ecmaVersion: 'latest',
         sourceType: 'module',
       },
       globals: {

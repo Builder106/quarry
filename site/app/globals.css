@@ -1,4 +1,4 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 /*
  * Quarry — "The Core Sample"
@@ -12,44 +12,44 @@
  * stock dark-slate + bright-yellow combo.
  */
 @theme {
-    /* Mine-shaft base. Deeper and warmer than the previous flat slate. */
-    --color-shaft: #14110d;
-    --color-rock: #1f1a14;
-    --color-face: #2a2218;
-    --color-vein-line: #4a3d2a;
+  /* Mine-shaft base. Deeper and warmer than the previous flat slate. */
+  --color-shaft: #14110d;
+  --color-rock: #1f1a14;
+  --color-face: #2a2218;
+  --color-vein-line: #4a3d2a;
 
-    /* Strata pigments. Used by the side stratigraphic column. */
-    --color-strata-topsoil: #3a2f1f;
-    --color-strata-sand: #6b513a;
-    --color-strata-clay: #826045;
-    --color-strata-slate: #2f2a23;
-    --color-strata-basalt: #1a1612;
+  /* Strata pigments. Used by the side stratigraphic column. */
+  --color-strata-topsoil: #3a2f1f;
+  --color-strata-sand: #6b513a;
+  --color-strata-clay: #826045;
+  --color-strata-slate: #2f2a23;
+  --color-strata-basalt: #1a1612;
 
-    /* Mineral text + accents. */
-    --color-chalk: #f4ede1;
-    --color-dust: #b8a888;
-    --color-shadow: #7a6b54;
-    --color-ore: #d4923a;       /* primary accent — refined ore gold */
-    --color-ore-deep: #a36b1d;
-    --color-hematite: #c4622e;  /* iron-oxide signal */
-    --color-malachite: #5d8a6b; /* rare-earth signal (sparingly) */
-    --color-pearl: #e8d9b8;
+  /* Mineral text + accents. */
+  --color-chalk: #f4ede1;
+  --color-dust: #b8a888;
+  --color-shadow: #7a6b54;
+  --color-ore: #d4923a; /* primary accent — refined ore gold */
+  --color-ore-deep: #a36b1d;
+  --color-hematite: #c4622e; /* iron-oxide signal */
+  --color-malachite: #5d8a6b; /* rare-earth signal (sparingly) */
+  --color-pearl: #e8d9b8;
 
-    /* Distinctive typography stack. Big Shoulders for carved display, Plex
+  /* Distinctive typography stack. Big Shoulders for carved display, Plex
      * for taut technical body, JetBrains Mono for surveyor-tablet readouts. */
-    --font-display: "Big Shoulders Display", "Big Shoulders", "Arial Black", sans-serif;
-    --font-sans: "IBM Plex Sans", system-ui, sans-serif;
-    --font-mono: "JetBrains Mono", "IBM Plex Mono", ui-monospace, monospace;
+  --font-display: 'Big Shoulders Display', 'Big Shoulders', 'Arial Black', sans-serif;
+  --font-sans: 'IBM Plex Sans', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', ui-monospace, monospace;
 }
 
 html,
 body {
-    background: var(--color-shaft);
-    color: var(--color-chalk);
-    font-family: var(--font-sans);
-    font-feature-settings: "ss01", "ss03", "cv11";
-    -webkit-font-smoothing: antialiased;
-    text-rendering: optimizeLegibility;
+  background: var(--color-shaft);
+  color: var(--color-chalk);
+  font-family: var(--font-sans);
+  font-feature-settings: 'ss01', 'ss03', 'cv11';
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
 /*
@@ -58,298 +58,290 @@ body {
  * rock layers passing behind everything.
  */
 body {
-    background-image:
-        url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='1' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.28  0 0 0 0 0.18  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"),
-        linear-gradient(
-            to bottom,
-            var(--color-shaft) 0%,
-            var(--color-rock) 60%,
-            var(--color-strata-basalt) 100%
-        );
-    background-attachment: fixed, fixed;
-    background-size: 240px 240px, 100% 100%;
+  background-image:
+    url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='240' height='240'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='1' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.35  0 0 0 0 0.28  0 0 0 0 0.18  0 0 0 0.06 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>"),
+    linear-gradient(
+      to bottom,
+      var(--color-shaft) 0%,
+      var(--color-rock) 60%,
+      var(--color-strata-basalt) 100%
+    );
+  background-attachment: fixed, fixed;
+  background-size:
+    240px 240px,
+    100% 100%;
 }
 
 ::selection {
-    background: rgba(212, 146, 58, 0.35);
-    color: var(--color-pearl);
+  background: rgba(212, 146, 58, 0.35);
+  color: var(--color-pearl);
 }
 
 /* Industrial sans-serif numerals: tabular, plain — feels punched, not designed. */
 .tabular {
-    font-variant-numeric: tabular-nums;
+  font-variant-numeric: tabular-nums;
 }
 
 /* Carved-stone display heading: thick stroke, tight tracking, slight chisel. */
 .display {
-    font-family: var(--font-display);
-    font-weight: 900;
-    letter-spacing: -0.02em;
-    line-height: 0.9;
-    text-transform: uppercase;
-    text-shadow:
-        0 1px 0 rgba(0, 0, 0, 0.6),
-        0 0 24px rgba(212, 146, 58, 0.05);
+  font-family: var(--font-display);
+  font-weight: 900;
+  letter-spacing: -0.02em;
+  line-height: 0.9;
+  text-transform: uppercase;
+  text-shadow:
+    0 1px 0 rgba(0, 0, 0, 0.6),
+    0 0 24px rgba(212, 146, 58, 0.05);
 }
 
 .display-thin {
-    font-family: var(--font-display);
-    font-weight: 500;
-    letter-spacing: 0.04em;
-    line-height: 1;
-    text-transform: uppercase;
+  font-family: var(--font-display);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1;
+  text-transform: uppercase;
 }
 
 /* Surveyor-tablet readout — small caps, monospace, dimmed. */
 .readout {
-    font-family: var(--font-mono);
-    font-size: 0.7rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--color-shadow);
+  font-family: var(--font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-shadow);
 }
 
 /* A drill-mark divider — short horizontal bar over a fine line, used between
  * narrative blocks. Echoes the way survey notebooks separate field entries. */
 .drillmark {
-    position: relative;
-    height: 1px;
-    background: var(--color-vein-line);
+  position: relative;
+  height: 1px;
+  background: var(--color-vein-line);
 }
 .drillmark::before {
-    content: "";
-    position: absolute;
-    top: -3px;
-    left: 0;
-    height: 7px;
-    width: 28px;
-    background: var(--color-ore);
+  content: '';
+  position: absolute;
+  top: -3px;
+  left: 0;
+  height: 7px;
+  width: 28px;
+  background: var(--color-ore);
 }
 
 /* Punch-tag — a manila-tag style card for stats / "core sample" labels. */
 .tag {
-    position: relative;
-    background:
-        linear-gradient(
-            135deg,
-            var(--color-face) 0%,
-            var(--color-rock) 100%
-        );
-    border: 1px solid var(--color-vein-line);
-    border-radius: 2px;
-    padding: 1.5rem 1.25rem;
+  position: relative;
+  background: linear-gradient(135deg, var(--color-face) 0%, var(--color-rock) 100%);
+  border: 1px solid var(--color-vein-line);
+  border-radius: 2px;
+  padding: 1.5rem 1.25rem;
 }
 /* Twine-hole punch in the corner. */
 .tag::before {
-    content: "";
-    position: absolute;
-    top: 14px;
-    right: 14px;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background: var(--color-shaft);
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
+  content: '';
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: var(--color-shaft);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.8);
 }
 /* Cardboard nick on the top-left corner — torn edge feel. */
 .tag::after {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 16px;
-    height: 16px;
-    background: var(--color-shaft);
-    clip-path: polygon(0 0, 100% 0, 0 100%);
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 16px;
+  height: 16px;
+  background: var(--color-shaft);
+  clip-path: polygon(0 0, 100% 0, 0 100%);
 }
 
 /* Borehole step — vertical drill progression. */
 .borehole {
-    position: relative;
-    padding-left: 4.5rem;
+  position: relative;
+  padding-left: 4.5rem;
 }
 .borehole::before {
-    content: "";
-    position: absolute;
-    left: 1.4rem;
-    top: 0;
-    bottom: 0;
-    width: 1px;
-    background: repeating-linear-gradient(
-        to bottom,
-        var(--color-vein-line) 0px,
-        var(--color-vein-line) 6px,
-        transparent 6px,
-        transparent 12px
-    );
+  content: '';
+  position: absolute;
+  left: 1.4rem;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background: repeating-linear-gradient(
+    to bottom,
+    var(--color-vein-line) 0px,
+    var(--color-vein-line) 6px,
+    transparent 6px,
+    transparent 12px
+  );
 }
 .borehole-marker {
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 2.9rem;
-    height: 2.9rem;
-    background: var(--color-shaft);
-    border: 1px solid var(--color-ore);
-    color: var(--color-ore);
-    font-family: var(--font-mono);
-    font-size: 0.75rem;
-    font-weight: 700;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    letter-spacing: 0.05em;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 2.9rem;
+  height: 2.9rem;
+  background: var(--color-shaft);
+  border: 1px solid var(--color-ore);
+  color: var(--color-ore);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  letter-spacing: 0.05em;
 }
 .borehole-marker::after {
-    /* Tick on the right side, going to the step content. */
-    content: "";
-    position: absolute;
-    right: -10px;
-    top: 50%;
-    height: 1px;
-    width: 10px;
-    background: var(--color-ore);
+  /* Tick on the right side, going to the step content. */
+  content: '';
+  position: absolute;
+  right: -10px;
+  top: 50%;
+  height: 1px;
+  width: 10px;
+  background: var(--color-ore);
 }
 
 /* Pull-quote frame for the scope card. */
 .field-note {
-    border-left: 3px solid var(--color-ore);
-    padding-left: 1rem;
-    font-style: italic;
-    color: var(--color-dust);
+  border-left: 3px solid var(--color-ore);
+  padding-left: 1rem;
+  font-style: italic;
+  color: var(--color-dust);
 }
 
 /* Code-block: like a chunk pulled from a field log. */
 pre.field-log {
-    background:
-        linear-gradient(
-            to right,
-            var(--color-face) 0%,
-            var(--color-rock) 100%
-        );
-    border: 1px solid var(--color-vein-line);
-    border-left: 3px solid var(--color-ore);
-    border-radius: 0;
-    padding: 1.25rem 1.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.85rem;
-    line-height: 1.7;
-    overflow-x: auto;
-    color: var(--color-pearl);
+  background: linear-gradient(to right, var(--color-face) 0%, var(--color-rock) 100%);
+  border: 1px solid var(--color-vein-line);
+  border-left: 3px solid var(--color-ore);
+  border-radius: 0;
+  padding: 1.25rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.85rem;
+  line-height: 1.7;
+  overflow-x: auto;
+  color: var(--color-pearl);
 }
 .field-log .dim {
-    color: var(--color-shadow);
+  color: var(--color-shadow);
 }
 .field-log .ore {
-    color: var(--color-ore);
+  color: var(--color-ore);
 }
 
 /* Scrollbar tinted ore. */
 ::-webkit-scrollbar {
-    width: 10px;
-    height: 10px;
+  width: 10px;
+  height: 10px;
 }
 ::-webkit-scrollbar-track {
-    background: var(--color-shaft);
+  background: var(--color-shaft);
 }
 ::-webkit-scrollbar-thumb {
-    background: var(--color-vein-line);
-    border: 2px solid var(--color-shaft);
+  background: var(--color-vein-line);
+  border: 2px solid var(--color-shaft);
 }
 ::-webkit-scrollbar-thumb:hover {
-    background: var(--color-ore-deep);
+  background: var(--color-ore-deep);
 }
 
 /* Hover lift — restrained, like a tag swinging slightly when bumped. */
 @media (prefers-reduced-motion: no-preference) {
-    .tag,
-    a.cta {
-        transition:
-            transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
-            border-color 200ms ease;
-    }
-    .tag:hover {
-        transform: translateY(-2px) rotate(-0.4deg);
-        border-color: var(--color-ore);
-    }
-    a.cta:hover {
-        transform: translateY(-1px);
-    }
+  .tag,
+  a.cta {
+    transition:
+      transform 200ms cubic-bezier(0.4, 0, 0.2, 1),
+      border-color 200ms ease;
+  }
+  .tag:hover {
+    transform: translateY(-2px) rotate(-0.4deg);
+    border-color: var(--color-ore);
+  }
+  a.cta:hover {
+    transform: translateY(-1px);
+  }
 }
 
 /* CTA — heavy industrial button. Sharp corners, double-stroke shadow. */
 a.cta {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 0.85rem 1.5rem;
-    font-family: var(--font-mono);
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.15em;
-    text-transform: uppercase;
-    text-decoration: none;
-    border-radius: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.85rem 1.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  text-decoration: none;
+  border-radius: 0;
 }
 a.cta.primary {
-    background: var(--color-ore);
-    color: var(--color-shaft);
-    border: 1px solid var(--color-ore);
-    box-shadow:
-        2px 2px 0 var(--color-ore-deep),
-        4px 4px 0 var(--color-shaft);
+  background: var(--color-ore);
+  color: var(--color-shaft);
+  border: 1px solid var(--color-ore);
+  box-shadow:
+    2px 2px 0 var(--color-ore-deep),
+    4px 4px 0 var(--color-shaft);
 }
 a.cta.primary:hover {
-    background: var(--color-pearl);
-    border-color: var(--color-pearl);
-    box-shadow:
-        2px 2px 0 var(--color-ore),
-        4px 4px 0 var(--color-shaft);
+  background: var(--color-pearl);
+  border-color: var(--color-pearl);
+  box-shadow:
+    2px 2px 0 var(--color-ore),
+    4px 4px 0 var(--color-shaft);
 }
 a.cta.ghost {
-    background: transparent;
-    color: var(--color-chalk);
-    border: 1px solid var(--color-vein-line);
+  background: transparent;
+  color: var(--color-chalk);
+  border: 1px solid var(--color-vein-line);
 }
 a.cta.ghost:hover {
-    border-color: var(--color-ore);
-    color: var(--color-ore);
+  border-color: var(--color-ore);
+  color: var(--color-ore);
 }
 
 /* Sticky depth meter — pinned readout on the left side. */
 .depth-meter {
-    position: fixed;
-    left: max(1rem, calc((100vw - 80rem) / 2 - 4rem));
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 50;
-    display: flex;
-    flex-direction: column;
-    gap: 0.35rem;
-    font-family: var(--font-mono);
-    font-size: 0.65rem;
-    letter-spacing: 0.18em;
-    text-transform: uppercase;
-    color: var(--color-shadow);
-    pointer-events: none;
+  position: fixed;
+  left: max(1rem, calc((100vw - 80rem) / 2 - 4rem));
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  font-family: var(--font-mono);
+  font-size: 0.65rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--color-shadow);
+  pointer-events: none;
 }
 .depth-meter b {
-    color: var(--color-ore);
-    font-weight: 700;
+  color: var(--color-ore);
+  font-weight: 700;
 }
 @media (max-width: 1280px) {
-    .depth-meter {
-        display: none;
-    }
+  .depth-meter {
+    display: none;
+  }
 }
 
 /* Crosshatch — diagonal blast-line pattern used as decorative filler. */
 .crosshatch {
-    background-image: repeating-linear-gradient(
-        45deg,
-        var(--color-vein-line) 0px,
-        var(--color-vein-line) 1px,
-        transparent 1px,
-        transparent 8px
-    );
+  background-image: repeating-linear-gradient(
+    45deg,
+    var(--color-vein-line) 0px,
+    var(--color-vein-line) 1px,
+    transparent 1px,
+    transparent 8px
+  );
 }
