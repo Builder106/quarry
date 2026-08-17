@@ -51,11 +51,11 @@
   <g font-family="ui-monospace, 'JetBrains Mono', SFMono-Regular, Menlo, Monaco, Consolas, monospace"
      font-size="13" font-weight="500" letter-spacing="0.04em">
     <text x="76"  y="295" fill="#a36b1d">188 B runtime</text>
-    <text x="195" y="295" fill="#b8a888">·</text>
+    <text x="195" y="295" fill="#b8a888">|</text>
     <text x="210" y="295" fill="#a36b1d">110k gas measured</text>
-    <text x="364" y="295" fill="#b8a888">·</text>
+    <text x="364" y="295" fill="#b8a888">|</text>
     <text x="379" y="295" fill="#a36b1d">Yul-native</text>
-    <text x="465" y="295" fill="#b8a888">·</text>
+    <text x="465" y="295" fill="#b8a888">|</text>
     <text x="480" y="295" fill="#a36b1d">Uniswap V2 + Sushiswap</text>
   </g>
 
@@ -70,5 +70,5 @@
   <!-- Top-right corner tag -->
   <text x="1124" y="50"
         font-family="ui-monospace, 'JetBrains Mono', SFMono-Regular, Menlo, monospace"
-        font-size="11" fill="#a89878" letter-spacing="0.12em" text-anchor="end">QUARRY · V2 · 2026</text>
+        font-size="11" fill="#a89878" letter-spacing="0.12em" text-anchor="end">QUARRY | V2 | 2026</text>
 </svg>
