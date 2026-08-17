@@ -10,7 +10,7 @@
 [![Bun](https://img.shields.io/badge/bun-1.3-black.svg)](https://bun.sh)
 [![Yul runtime](https://img.shields.io/badge/runtime-188_B-d4923a.svg)](contracts/src/Executor.yul)
 [![Two-hop gas](https://img.shields.io/badge/two--hop_gas-110k-d4923a.svg)](contracts/test/ExecutorFork.t.sol)
-[![License](https://img.shields.io/badge/license-MIT-blue.svg)](#license)
+[![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Live site](https://img.shields.io/badge/site-quarry--mev.vercel.app-d4923a.svg)](https://quarry-mev.vercel.app)
 
 > **An automated currency price-matching bot.** Quarry spots temporary price differences across crypto exchanges and balances them instantly.
