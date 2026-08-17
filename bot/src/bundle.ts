@@ -93,7 +93,7 @@ export function buildExecutorCalldata(arb: ScoredArb, options: CalldataOptions =
       amount1OutP2,
       arb.baseToken,
       minProfit,
-    ]
+    ],
   );
 }
 
@@ -111,7 +111,7 @@ export type FlashbotsBundle = {
 /// specific target block. Caller provides the txs already serialized.
 export function buildBundlePayload(
   signedTxs: readonly Hex[],
-  targetBlock: bigint
+  targetBlock: bigint,
 ): FlashbotsBundle {
   return { txs: signedTxs, blockNumber: toHex(targetBlock) };
 }
@@ -136,7 +136,7 @@ export function toJsonRpcRequest(bundle: FlashbotsBundle): {
 /// Same shape plus `stateBlockNumber` (the block to simulate against).
 export function toCallBundleRequest(
   bundle: FlashbotsBundle,
-  stateBlock: bigint
+  stateBlock: bigint,
 ): {
   jsonrpc: '2.0';
   id: number;
@@ -168,7 +168,7 @@ export type ExecutionCall = {
 export function buildFlashloanCall(
   arb: ScoredArb,
   executor: Address,
-  options: CalldataOptions = {}
+  options: CalldataOptions = {},
 ): ExecutionCall {
   const params = buildExecutorCalldata(arb, options);
   const data = encodeFunctionData({
@@ -187,7 +187,7 @@ export function buildFlashloanCall(
 export function buildDirectCall(
   arb: ScoredArb,
   executor: Address,
-  options: CalldataOptions = {}
+  options: CalldataOptions = {},
 ): ExecutionCall {
   return { to: executor, data: buildExecutorCalldata(arb, options) };
 }
@@ -201,7 +201,7 @@ export function getExecutorAddress(): Address {
   const env = process.env[EXECUTOR_ADDRESS_ENV];
   if (!env || !/^0x[0-9a-fA-F]{40}$/.test(env)) {
     throw new Error(
-      `${EXECUTOR_ADDRESS_ENV} must be set to a 20-byte hex address (e.g. from a forked anvil deploy)`
+      `${EXECUTOR_ADDRESS_ENV} must be set to a 20-byte hex address (e.g. from a forked anvil deploy)`,
     );
   }
   return env as Address;

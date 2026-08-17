@@ -27,9 +27,9 @@ export async function fetchReserves(
   client: PublicClient,
   tokenA: Address,
   tokenB: Address,
-  dexes: readonly Dex[]
+  dexes: readonly Dex[],
 ): Promise<readonly RawReserves[]> {
-  const pairs = dexes.map(dex => ({ dex, pair: pairAddressFor(dex, tokenA, tokenB) }));
+  const pairs = dexes.map((dex) => ({ dex, pair: pairAddressFor(dex, tokenA, tokenB) }));
 
   const results = await client.multicall({
     contracts: pairs.map(
@@ -38,7 +38,7 @@ export async function fetchReserves(
           address: pair,
           abi: PAIR_ABI,
           functionName: 'getReserves',
-        }) as const
+        }) as const,
     ),
     allowFailure: true,
   });

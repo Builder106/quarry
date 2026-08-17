@@ -47,7 +47,7 @@ describe('pairAddressFor', () => {
 
   test('different DEXes produce different addresses for the same pair', () => {
     expect(pairAddressFor('uniswap-v2', WETH, USDC)).not.toBe(
-      pairAddressFor('sushiswap', WETH, USDC)
+      pairAddressFor('sushiswap', WETH, USDC),
     );
   });
 });

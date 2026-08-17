@@ -22,7 +22,7 @@ export async function signExecutorTx(
   privateKey: Hex,
   executor: Address,
   calldata: Hex,
-  fees: ChainFees
+  fees: ChainFees,
 ): Promise<Hex> {
   const account = privateKeyToAccount(privateKey);
   return account.signTransaction({
@@ -47,7 +47,7 @@ export async function fetchChainFees(
   account: Address,
   chainId: number,
   gas: bigint = 250_000n,
-  priorityFeeWei: bigint = 10n ** 9n
+  priorityFeeWei: bigint = 10n ** 9n,
 ): Promise<ChainFees> {
   const [nonce, baseFee] = await Promise.all([
     client.getTransactionCount({ address: account }),

@@ -72,13 +72,13 @@ describe('scoreFromRawReserves (back-run)', () => {
       exactInSwap(50n * 10n ** 18n, [WETH, USDC]),
       'uniswap-v2',
       raw,
-      0n
+      0n,
     );
     const large = scoreFromRawReserves(
       exactInSwap(200n * 10n ** 18n, [WETH, USDC]),
       'uniswap-v2',
       raw,
-      0n
+      0n,
     );
     if (!small || !large) throw new Error('both should score');
     expect(large.profit).toBeGreaterThan(small.profit);

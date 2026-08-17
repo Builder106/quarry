@@ -71,7 +71,7 @@ export function scoreFromRawReserves(
   swap: DecodedSwap,
   victimDex: Dex,
   raw: readonly RawReserves[],
-  gasCostWei: bigint
+  gasCostWei: bigint,
 ): ScoredArb | null {
   if (swap.kind !== 'exactInForTokens') return null;
   if (swap.path.length < 2) return null;
@@ -79,14 +79,14 @@ export function scoreFromRawReserves(
   const tokenB = swap.path[1];
   if (!tokenA || !tokenB) return null;
 
-  const victim = raw.find(r => r.dex === victimDex);
+  const victim = raw.find((r) => r.dex === victimDex);
   if (!victim) return null;
 
   const victimOriented = orient(victim, tokenA, tokenB);
   const victimOut = getAmountOut(
     swap.amountIn,
     victimOriented.reserveIn,
-    victimOriented.reserveOut
+    victimOriented.reserveOut,
   );
   if (victimOut <= 0n) return null;
   const postVictimAReserve = victimOriented.reserveIn + swap.amountIn;
@@ -132,7 +132,7 @@ export function scoreFromRawReserves(
 export async function scoreOpportunity(
   client: PublicClient,
   swap: DecodedSwap,
-  victimDex: Dex
+  victimDex: Dex,
 ): Promise<ScoredArb | null> {
   if (swap.kind !== 'exactInForTokens') return null;
   if (swap.path.length < 2) return null;

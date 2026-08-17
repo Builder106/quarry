@@ -34,7 +34,7 @@ const unwatch = client.watchPendingTransactions({
       const elapsed = (Date.now() - startedAt) / 1000;
       const rate = (seen / elapsed).toFixed(1);
       console.log(
-        `[scanner] ${seen} tx | ${matched} matched | ${opportunities} arb | ${elapsed.toFixed(1)}s | ${rate} tx/s`
+        `[scanner] ${seen} tx | ${matched} matched | ${opportunities} arb | ${elapsed.toFixed(1)}s | ${rate} tx/s`,
       );
     }
   },
@@ -61,7 +61,7 @@ async function handleHash(hash: Hex): Promise<void> {
     const inter = arb.intermediateToken.slice(0, 6);
     console.log(
       `[scanner] back-run #${opportunities} ${short} victim=${arb.victimDex} arb=${arb.arbDex} ` +
-        `${base}/${inter} in=${arb.amountIn} profit=${arb.profit}`
+        `${base}/${inter} in=${arb.amountIn} profit=${arb.profit}`,
     );
   } catch {
     // Pending tx may have been replaced or mined between subscription

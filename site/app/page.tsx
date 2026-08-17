@@ -153,7 +153,7 @@ function StrataColumn() {
       preserveAspectRatio="none"
       className="hidden lg:block fixed right-0 top-0 h-screen w-12 xl:w-16 z-10 opacity-90 pointer-events-none"
     >
-      {BANDS.map(b => (
+      {BANDS.map((b) => (
         <g key={b.name}>
           <rect x="0" y={b.y} width="80" height={b.h} fill={b.fill} />
           {/* Hairline cracks within each band */}
@@ -176,7 +176,7 @@ function StrataColumn() {
         </g>
       ))}
       {/* Bedding-plane bright dividers — the visible stratification. */}
-      {BANDS.map(b => (
+      {BANDS.map((b) => (
         <line
           key={`div-${b.y}`}
           x1="0"
@@ -379,7 +379,7 @@ export default function Home() {
           </p>
 
           <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
-            {SAMPLES.map(s => (
+            {SAMPLES.map((s) => (
               <article key={s.label} className="tag">
                 <div className="readout">Sample · {s.depth} m</div>
                 <div className="mt-6 flex items-baseline gap-2">
@@ -428,7 +428,7 @@ export default function Home() {
             </div>
 
             <ol className="lg:col-span-7 space-y-7">
-              {DRILLING_LOG.map(s => (
+              {DRILLING_LOG.map((s) => (
                 <li key={s.step} className="borehole">
                   <div className="borehole-marker">{s.step}</div>
                   <div className="flex items-baseline gap-3 mb-1">
@@ -528,7 +528,7 @@ export default function Home() {
           </p>
 
           <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-5">
-            {INVENTORY.map(crate => (
+            {INVENTORY.map((crate) => (
               <div
                 key={crate.crate}
                 className="border border-[var(--color-vein-line)] bg-[var(--color-rock)] p-5"
@@ -539,7 +539,7 @@ export default function Home() {
                 </div>
                 <div className="drillmark my-4" />
                 <ul className="font-mono text-sm text-[var(--color-dust)] space-y-1.5 columns-1 sm:columns-2">
-                  {crate.items.map(i => (
+                  {crate.items.map((i) => (
                     <li key={i} className="break-inside-avoid">
                       <span className="text-[var(--color-shadow)] mr-2">·</span>
                       {i}
