@@ -4,17 +4,16 @@
 //   - leg 1 (B → A) runs on the victim's pool at the post-victim rate
 //   - leg 2 (A → B) runs on the unchanged counter DEX
 //
-// We measure profit in B — the token the victim received and that got more
+// We measure profit in B: the token the victim received and that got more
 // expensive on the victim's pool. The back-runner deposits B (cheaply now,
 // because A is abundant in victim's pool) to take A, then sells A on the
 // counter pool at the still-current rate. The arb direction is determined
-// by the victim's trade — we don't try the reverse.
+// by the victim's trade; we don't try the reverse.
 //
 // Gas-cost gate: when the back-runner's base token is WETH, we compare the
 // profit (also in WETH) against the bundle's gas cost in wei. If profit
-// doesn't beat gas, the opportunity isn't bundle-eligible and we drop it.
-// Non-WETH base tokens skip the gate in V0 — a USDC profit vs ETH gas cost
-// comparison needs a WETH/baseToken conversion that's not yet wired.
+// does not exceed gas, the opportunity is dropped. Non-WETH base tokens
+// skip the gas gate because cross-asset price conversion to ETH is not performed here.
 
 import type { Address, PublicClient } from 'viem';
 import { getAmountOut, quoteOptimalArb, type PoolReserves } from './amm';
@@ -64,7 +63,7 @@ function orient(raw: RawReserves, tokenIn: Address, tokenOut: Address): PoolRese
   };
 }
 
-/// Pure scoring — no IO. Applies the victim's swap to its DEX's reserves,
+/// Pure scoring: no IO. Applies the victim's swap to its DEX's reserves,
 /// then scores the back-run round trip against each available counter DEX.
 /// Returns the highest-profit result, or null if no opportunity covers
 /// fees and (for WETH-base trades) gas.
@@ -121,16 +120,14 @@ export function scoreFromRawReserves(
   }
   if (best === null) return null;
 
-  // Gas-cost gate. WETH base means profit is already in wei terms — direct
-  // comparison. Non-WETH base profits would need a WETH/baseToken
-  // conversion via a third reserve fetch; deferred to V1.
+  // Gas-cost gate: WETH base profit is measured in wei for direct comparison.
   const isWethBase = best.baseToken.toLowerCase() === WETH_LOWER;
   if (isWethBase && best.profit <= gasCostWei) return null;
 
   return best;
 }
 
-/// IO wrapper — fetches reserves and gas price in parallel, delegates to
+/// IO wrapper: fetches reserves and gas price in parallel, delegates to
 /// the pure scorer.
 export async function scoreOpportunity(
   client: PublicClient,

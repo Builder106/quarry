@@ -1,32 +1,27 @@
-// Quarry MEV arbitrage executor — bare-metal Yul.
+// Quarry MEV arbitrage executor: bare-metal Yul.
 //
-// V3: adds Aave V3 `executeOperation` entry point alongside the direct V2
-// entry, so the bot can run inventory-free via flashloans. Dispatch is by
-// selector at calldata[0..4]: 0x1b11d0ff = executeOperation, anything else
-// = the V2 direct path. Both paths share the swap orchestration logic via
-// the `runArb` Yul function — the only differences are pre-flight (the
-// flashloan path transfers the borrowed asset to pool1 first) and the
-// post-arb settlement (the flashloan path approves Aave to pull back
-// amount + premium and checks net profit against `premium + minProfit`).
+// Supports Aave V3 `executeOperation` flashloan entry points and direct
+// V2 swap executions. Dispatch is determined by the 4-byte selector:
+// 0x1b11d0ff routes to executeOperation, and all other 220-byte payloads
+// route to the direct swap path.
 //
-// V2 packed calldata (220 bytes, used by both paths):
+// Packed calldata layout (220 bytes):
 //   bytes   0..20  : address pool1
 //   bytes  20..40  : address pool2
 //   bytes  40..72  : uint256 amount0Out for pool1
 //   bytes  72..104 : uint256 amount1Out for pool1
 //   bytes 104..136 : uint256 amount0Out for pool2
 //   bytes 136..168 : uint256 amount1Out for pool2
-//   bytes 168..188 : address tokenIn        (must equal `asset` on V3 path)
+//   bytes 168..188 : address tokenIn (equals asset on flashloan path)
 //   bytes 188..220 : uint256 minProfit
 //
-// For the V3 path, the params bytes argument carries this same 220-byte
-// payload — extracted from calldata[196..416].
+// On the flashloan path, the params argument carries this 220-byte payload
+// extracted from calldata[196..416].
 //
 // Storage:
 //   slot 0 : address owner
 
 object "QuarryExecutor" {
-    // ---- Constructor ----
     code {
         sstore(0, caller())
         let size := datasize("runtime")
@@ -34,38 +29,29 @@ object "QuarryExecutor" {
         return(0, size)
     }
 
-    // ---- Runtime ----
     object "runtime" {
         code {
-            // Dispatch on the first 4 bytes. The V2 direct calldata starts
-            // with pool1's address — the chance of its first 4 bytes
-            // colliding with 0x1b11d0ff is 1/2^32, which is fine for an MEV
-            // bot. We additionally require calldatasize() == 220 on the
-            // direct path to defend against malformed inputs.
             let sel := shr(224, calldataload(0))
 
             switch sel
             case 0x1b11d0ff {
-                // ---------- Aave V3 executeOperation entry ----------
+                // Aave V3 executeOperation entry point
                 // executeOperation(address asset, uint256 amount,
                 //                  uint256 premium, address initiator,
                 //                  bytes params)
 
-                // Caller must be the Aave V3 mainnet pool. Test deployments
-                // can use `vm.etch` to put mock bytecode at this address so
-                // the auth check still passes.
+                // Caller must be the Aave V3 mainnet pool.
                 if iszero(eq(caller(), 0x87870bca3f3fd6335c3f4ce8392d69350b4fa4e2)) {
                     revert(0, 0)
                 }
-                // Initiator must be the owner — i.e., the original sender to
-                // Aave's flashLoanSimple. Aave passes msg.sender as initiator.
+                // Initiator must be the owner (original caller of flashLoanSimple).
                 if iszero(eq(calldataload(100), sload(0))) { revert(0, 0) }
 
                 let asset := calldataload(4)
                 let amount := calldataload(36)
                 let premium := calldataload(68)
 
-                // params content starts at offset 196 (4 selector + 5×32 fixed
+                // params content starts at offset 196 (4 selector + 5x32 fixed
                 // args + 32 length). The 220-byte packed payload follows.
                 let pool1 := shr(96, calldataload(196))
                 let pool2 := shr(96, calldataload(216))
@@ -77,36 +63,26 @@ object "QuarryExecutor" {
                 if iszero(eq(shr(96, calldataload(364)), asset)) { revert(0, 0) }
                 let minProfit := calldataload(384)
 
-                // Snapshot balance BEFORE — this is the post-Aave-transfer
-                // amount (Aave has already sent us `amount`).
                 let balanceBefore := erc20BalanceOf(asset, address())
 
-                // Transfer the borrowed asset to pool1 to satisfy leg-1's
-                // K-invariant requirement.
                 erc20Transfer(asset, pool1, amount)
 
-                // Orchestrate the two swaps (shared with the V2 direct path).
                 runSwaps(pool1, pool2, a0p1, a1p1, a0p2, a1p2)
 
                 let balanceAfter := erc20BalanceOf(asset, address())
                 if lt(balanceAfter, balanceBefore) { revert(0, 0) }
                 let netGain := sub(balanceAfter, balanceBefore)
 
-                // The bot needs to cover Aave's premium and still meet
-                // minProfit. The pull-back of `amount` is automatic — Aave
-                // does `transferFrom(executor, pool, amount + premium)` after
-                // we return. We just need to approve.
                 if lt(netGain, add(premium, minProfit)) { revert(0, 0) }
 
                 // Approve Aave to pull back amount + premium.
                 erc20Approve(asset, 0x87870bca3f3fd6335c3f4ce8392d69350b4fa4e2, add(amount, premium))
 
-                // Return true (32 bytes, value 1).
                 mstore(0x00, 1)
                 return(0x00, 0x20)
             }
             default {
-                // ---------- V2 direct entry (legacy) ----------
+                // Direct swap entry point
                 if iszero(eq(calldatasize(), 220)) { revert(0, 0) }
                 if iszero(eq(caller(), sload(0))) { revert(0, 0) }
 
@@ -131,8 +107,6 @@ object "QuarryExecutor" {
                 mstore(0x00, profit)
                 return(0x00, 0x20)
             }
-
-            // ---- Shared helpers ----
 
             // ERC20.balanceOf(account) selector = 0x70a08231
             function erc20BalanceOf(token, account) -> bal {
