@@ -56,35 +56,35 @@ sequenceDiagram
     Yul-->>Bundle: profit OR revert(0,0)
 ```text
 
-The executor is monolithic Yul — no Solidity, no function dispatcher, no ABI decoding. Calldata is a tightly packed byte string read directly via `calldataload`. Pool 1's output flows *directly* to pool 2 (the canonical UniV2 trick — pool 1 sends its output token to pool 2's reserve balance, skipping an intermediate ERC20 transfer through this contract and saving ~25k gas). A balance snapshot at entry and exit guards the trade: if the arbitrage window closes between detection and inclusion, the whole transaction reverts and only the base network fee is burned.
+The executor is built in monolithic Yul bytecode without heavy framework overhead. Data is read directly as a tightly packed byte string. Pool 1's output flows directly to pool 2 (a classic decentralized exchange optimization where tokens transfer straight between liquidity pools, skipping intermediate transfers to save transaction fees). A balance snapshot at entry and exit guards the trade: if the price difference disappears before the transaction completes, the entire transaction cancels automatically with zero loss of funds.
 
 ## Repo layout
 
 ```text
 Quarry/
-├── contracts/                    # Foundry project — Yul executor + Solidity tests
-│   ├── src/Executor.yul          # 188 B runtime, V2 two-hop executor
-│   ├── test/Executor.t.sol       # 7 tests, mock pools, atomicity assertions
-│   ├── test/ExecutorFork.t.sol   # 1 test against real mainnet bytecode (skips w/o RPC)
+├── contracts/                    # Foundry project: smart contract executor + tests
+│   ├── src/Executor.yul          # 188-byte runtime, two-hop executor
+│   ├── test/Executor.t.sol       # Tests, mock pools, safety assertions
+│   ├── test/ExecutorFork.t.sol   # Tests against real network state
 │   └── foundry.toml
-├── bot/                          # TypeScript scanner — Bun runtime
-│   ├── src/amm.ts                # constant-product math + closed-form optimal-input
-│   ├── src/decode.ts             # router calldata decoder + router→DEX registry
-│   ├── src/pairs.ts              # CREATE2 pair address derivation
-│   ├── src/reserves.ts           # multicall reserve fetcher
-│   ├── src/score.ts              # back-run scoring (pure + IO wrapper)
-│   ├── src/gas.ts                # cached gas-price + bundle gas estimate
-│   ├── src/bundle.ts             # 220-byte calldata builder + Flashbots envelope
-│   ├── src/sign.ts               # EIP-1559 signing via viem local account
-│   ├── src/scanner.ts            # WS mempool → score → log opportunity
-│   ├── scripts/demo.ts           # end-to-end runner against an anvil fork
-│   └── test/                     # 60 Bun tests, 2,121 assertions
-├── JOURNAL.md                    # decision/incident log
-├── CONTRIBUTING.md               # scope, perf gates, PR process
+├── bot/                          # TypeScript scanner (Bun runtime)
+│   ├── src/amm.ts                # Constant-product pricing math + solver
+│   ├── src/decode.ts             # Transaction decoder + exchange registry
+│   ├── src/pairs.ts              # Address derivation utilities
+│   ├── src/reserves.ts           # Multi-pool reserve fetcher
+│   ├── src/score.ts              # Opportunity scoring engine
+│   ├── src/gas.ts                # Gas price estimator
+│   ├── src/bundle.ts             # Compact payload builder
+│   ├── src/sign.ts               # Transaction signing
+│   ├── src/scanner.ts            # Live transaction stream scanner
+│   ├── scripts/demo.ts           # End-to-end demo runner
+│   └── test/                     # 60 automated tests, 2,121 assertions
+├── JOURNAL.md                    # Architecture and incident log
+├── CONTRIBUTING.md               # Scope and contribution guidelines
 └── LICENSE
-```text
+```
 
-The two trees are intentionally independent. They communicate via deployed contract address + ABI only — never via a shared TS package. See [JOURNAL.md](JOURNAL.md) for the rationale.
+The two subtrees are intentionally independent. They communicate only through deployed contract addresses and standard binary interfaces. See [JOURNAL.md](JOURNAL.md) for details.
 
 ## Quick start
 
