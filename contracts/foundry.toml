@@ -13,6 +13,7 @@ via_ir = true
 extra_output = ["irOptimized"]
 bytecode_hash = "none"
 cbor_metadata = false
+deny_warnings = true
 
 [profile.default.fuzz]
 runs = 256
