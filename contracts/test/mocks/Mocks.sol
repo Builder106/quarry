@@ -59,9 +59,7 @@ contract MockProfitablePool {
 
     /// @dev Matches Uniswap V2 IUniswapV2Pair.swap signature exactly so the
     /// executor's 0x022c0d9f selector + ABI layout hits cleanly.
-    function swap(uint256 amount0Out, uint256 amount1Out, address to, bytes calldata)
-        external
-    {
+    function swap(uint256 amount0Out, uint256 amount1Out, address to, bytes calldata) external {
         uint256 amount = amount0Out > 0 ? amount0Out : amount1Out;
         require(amount > 0, "MockPool: zero output");
         token.transfer(to, amount);
@@ -100,9 +98,8 @@ contract MockAaveV3Pool {
         // 2. Invoke the receiver's executeOperation callback. The initiator
         //    is msg.sender — the address that called flashLoanSimple. The
         //    Yul executor checks this matches its stored owner.
-        bool ok = IFlashLoanSimpleReceiver(receiverAddress).executeOperation(
-            asset, amount, premium, msg.sender, params
-        );
+        bool ok = IFlashLoanSimpleReceiver(receiverAddress)
+            .executeOperation(asset, amount, premium, msg.sender, params);
         require(ok, "MockAavePool: executeOperation returned false");
 
         // 3. Pull back amount + premium. The receiver must have approved us.

@@ -38,7 +38,7 @@ contract ExecutorTest is Test {
         // pool2 receives on hop 1"; pool2's WETH reserve becomes "what the
         // executor receives on hop 2".
         usdc.mint(address(pool1), 1_000_000 * 1e6);
-        weth.mint(address(pool2), 1_000 ether);
+        weth.mint(address(pool2), 1000 ether);
     }
 
     function _payload(
@@ -58,34 +58,20 @@ contract ExecutorTest is Test {
         // Hop 1: pool1 hands 1,000 USDC to pool2.
         // Hop 2: pool2 hands 1.1 WETH back to executor.
         bytes memory payload = _payload(
-            address(pool1),
-            address(pool2),
-            0,
-            1_000 * 1e6,
-            0,
-            1.1 ether,
-            address(weth),
-            1 ether
+            address(pool1), address(pool2), 0, 1000 * 1e6, 0, 1.1 ether, address(weth), 1 ether
         );
         (bool ok, bytes memory ret) = executor.call(payload);
         assertTrue(ok, "profitable two-hop should succeed");
         assertEq(abi.decode(ret, (uint256)), 1.1 ether, "profit must equal WETH payout");
         assertEq(weth.balanceOf(executor), 1.1 ether);
         // Sanity: pool2 received the USDC from pool1.
-        assertEq(usdc.balanceOf(address(pool2)), 1_000 * 1e6);
+        assertEq(usdc.balanceOf(address(pool2)), 1000 * 1e6);
     }
 
     function test_InsufficientProfit_Reverts() public {
         // Pool2 hands back only 0.5 WETH but we required 1 WETH minimum.
         bytes memory payload = _payload(
-            address(pool1),
-            address(pool2),
-            0,
-            1_000 * 1e6,
-            0,
-            0.5 ether,
-            address(weth),
-            1 ether
+            address(pool1), address(pool2), 0, 1000 * 1e6, 0, 0.5 ether, address(weth), 1 ether
         );
         (bool ok,) = executor.call(payload);
         assertFalse(ok, "must revert when profit < minProfit");
@@ -99,14 +85,7 @@ contract ExecutorTest is Test {
         // inner transfer, which bubbles up to the executor's CALL guard.
         MockProfitablePool emptyPool1 = new MockProfitablePool(usdc);
         bytes memory payload = _payload(
-            address(emptyPool1),
-            address(pool2),
-            0,
-            1_000 * 1e6,
-            0,
-            1.1 ether,
-            address(weth),
-            0
+            address(emptyPool1), address(pool2), 0, 1000 * 1e6, 0, 1.1 ether, address(weth), 0
         );
         (bool ok,) = executor.call(payload);
         assertFalse(ok, "hop 1 failure must revert");
@@ -119,14 +98,7 @@ contract ExecutorTest is Test {
         // transfer is undone (the load-bearing atomicity property).
         MockProfitablePool emptyPool2 = new MockProfitablePool(weth);
         bytes memory payload = _payload(
-            address(pool1),
-            address(emptyPool2),
-            0,
-            1_000 * 1e6,
-            0,
-            1.1 ether,
-            address(weth),
-            0
+            address(pool1), address(emptyPool2), 0, 1000 * 1e6, 0, 1.1 ether, address(weth), 0
         );
         (bool ok,) = executor.call(payload);
         assertFalse(ok, "hop 2 failure must revert");
@@ -138,14 +110,7 @@ contract ExecutorTest is Test {
 
     function test_StrangerCall_Reverts() public {
         bytes memory payload = _payload(
-            address(pool1),
-            address(pool2),
-            0,
-            1_000 * 1e6,
-            0,
-            1.1 ether,
-            address(weth),
-            0
+            address(pool1), address(pool2), 0, 1000 * 1e6, 0, 1.1 ether, address(weth), 0
         );
         vm.prank(stranger);
         (bool ok,) = executor.call(payload);
@@ -180,14 +145,7 @@ contract ExecutorTest is Test {
     /// executor's own opcodes on top of mock infrastructure.
     function test_GasCeiling_TwoHop_WithMocks() public {
         bytes memory payload = _payload(
-            address(pool1),
-            address(pool2),
-            0,
-            1_000 * 1e6,
-            0,
-            1.1 ether,
-            address(weth),
-            0
+            address(pool1), address(pool2), 0, 1000 * 1e6, 0, 1.1 ether, address(weth), 0
         );
         uint256 g0 = gasleft();
         (bool ok,) = executor.call(payload);

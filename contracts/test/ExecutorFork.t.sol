@@ -72,7 +72,7 @@ contract ExecutorForkTest is Test {
         returns (uint256)
     {
         uint256 amountInWithFee = amountIn * 997;
-        return (amountInWithFee * reserveOut) / (reserveIn * 1_000 + amountInWithFee);
+        return (amountInWithFee * reserveOut) / (reserveIn * 1000 + amountInWithFee);
     }
 
     function test_TwoHopRoundTrip_AgainstRealPools() public {
