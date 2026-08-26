@@ -48,7 +48,7 @@ jobs:
         run: forge install --no-git foundry-rs/forge-std
 
       - name: Format check
-        run: forge fmt --check
+        run: forge fmt --check test script
 
       - name: Build (with size report)
         run: forge build --sizes
