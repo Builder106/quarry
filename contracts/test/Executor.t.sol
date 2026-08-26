@@ -109,9 +109,8 @@ contract ExecutorTest is Test {
     }
 
     function test_StrangerCall_Reverts() public {
-        bytes memory payload = _payload(
-            address(pool1), address(pool2), 0, 1000 * 1e6, 0, 1.1 ether, address(weth), 0
-        );
+        bytes memory payload =
+            _payload(address(pool1), address(pool2), 0, 1000 * 1e6, 0, 1.1 ether, address(weth), 0);
         vm.prank(stranger);
         (bool ok,) = executor.call(payload);
         assertFalse(ok, "stranger must not pass auth");
@@ -144,9 +143,8 @@ contract ExecutorTest is Test {
     /// ExecutorFork.t.sol in V3. Here we guard against regressions in the
     /// executor's own opcodes on top of mock infrastructure.
     function test_GasCeiling_TwoHop_WithMocks() public {
-        bytes memory payload = _payload(
-            address(pool1), address(pool2), 0, 1000 * 1e6, 0, 1.1 ether, address(weth), 0
-        );
+        bytes memory payload =
+            _payload(address(pool1), address(pool2), 0, 1000 * 1e6, 0, 1.1 ether, address(weth), 0);
         uint256 g0 = gasleft();
         (bool ok,) = executor.call(payload);
         uint256 used = g0 - gasleft();
