@@ -17,7 +17,6 @@ bun.lockb
 .env.*.local
 
 # Editor / OS
-.DS_Store
 .idea/
 .vscode/*
 !.vscode/settings.json
