@@ -7,6 +7,9 @@ contracts/lib/
 # Node / Bun
 node_modules/
 bot/node_modules/
+site/node_modules/
+.next/
+site/.next/
 *.tsbuildinfo
 .npm
 bun.lockb
@@ -41,4 +44,3 @@ e2e/demo/output/*.mp4
 e2e/demo/output/*.webm
 test-results/
 playwright-report/
-.vscode/settings.json
