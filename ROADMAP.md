@@ -1,21 +1,27 @@
 # Quarry Roadmap
 
-High-level roadmap for the high-performance secret and credential scanner.
+Next steps and architectural milestones for the Quarry MEV arbitrage engine and Yul executor.
 
-## v1.1 — Entropy & Pattern Enhancements
+## v0.2 — Multi-Hop & Transaction Expansion
 
-- **Multi-Cloud Credential Heuristics**: Fine-grained regex and Shannon entropy detectors for GCP, AWS, Azure, and SaaS API tokens.
-- **Git History Deep Scan**: Parallel chunked commit history parsing with tree-sitter AST validation.
+- **3-Hop Triangular Arbitrage**: Pure Yul execution routing for 3-hop triangular arbitrage cycles (e.g. WETH → USDC → DAI → WETH).
+- **ETH-Side Transaction Decoding**: Decode `swapExactETHForTokens` and plumb `tx.value` through to the candidate scoring solver.
+- **Multi-Hop Path Expansion**: Expand the transaction decoder to traverse arbitrary swap path lengths beyond the initial hop.
 
-## v1.2 — IDE & CI Integration
+## v1.0 — Flashloans & Builder Relay Integration
 
-- **Pre-commit Fast Hook**: Sub-10ms staged diff scanner for developer pre-commit hooks.
-- **SARIF Report Generation**: Standardized static analysis format output for GitHub Code Scanning integration.
+- **Direct Flashloan Integration**: Native Aave V3 and Balancer V2 flashloan calls in bundle position 0.
+- **Multi-Token Base Routing**: Dynamic WETH/baseToken reserve queries for non-WETH base pair opportunities.
+- **Live Flashbots / MEV-Share Relay Pipeline**: Production-ready bundle submission targeting Ethereum block builders and MEV-Share.
 
 ## Out of Scope
 
-- Online token validity probing (offline scanning only)
-- Automatic code patching of exposed credentials
+Per [CONTRIBUTING.md](CONTRIBUTING.md), Quarry explicitly does not aim to:
+
+- Execute sandwich attacks or JIT liquidity extraction against retail traders (strictly non-predatory cross-DEX price balancing).
+- Support centralized exchange (CEX-DEX) arbitrage requiring custodial balances.
+- Run speculative directional trading strategies.
 
 ---
-For detailed RFCs and implementation notes, see [`docs/specs/`](docs/specs/).
+
+For technical specifications and gas benchmarks, see [`docs/MEV_ENGINEERING.md`](docs/MEV_ENGINEERING.md).

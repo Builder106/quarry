@@ -45,8 +45,8 @@ Prerequisites:
 - Node ≥ 22 (only for `pnpm`-installed dev deps; runtime is Bun)
 
 ```bash
-git clone <repo-url>
-cd Quarry
+git clone https://github.com/Builder106/quarry.git
+cd quarry
 cp .env.example .env   # then fill in MAINNET_RPC_URL for fork tests
 
 # On-chain side
@@ -66,7 +66,7 @@ forge test --match-contract ExecutorForkTest -vvv
 cd ../bot
 bun install
 bun run typecheck
-```text
+```
 
 The mock test suite (`ExecutorTest`) runs in milliseconds without any RPC
 config and is what CI gates on. The fork suite (`ExecutorForkTest`) skips
