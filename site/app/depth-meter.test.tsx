@@ -49,4 +49,3 @@ describe('DepthMeter', () => {
     expect(screen.getByText('SURFACE')).toBeTruthy();
   });
 });
-

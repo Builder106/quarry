@@ -3,7 +3,12 @@ import type { Address, PublicClient } from 'viem';
 import { encodeFunctionData, parseAbi } from 'viem';
 import { EXECUTOR_ADDRESS_ENV, getExecutorAddress } from '../src/bundle';
 import { decodeSwap } from '../src/decode';
-import { _resetGasCache, estimateExecutorGasCost, EXECUTOR_GAS_UNITS, getGasPrice } from '../src/gas';
+import {
+  _resetGasCache,
+  estimateExecutorGasCost,
+  EXECUTOR_GAS_UNITS,
+  getGasPrice,
+} from '../src/gas';
 import { fetchReserves } from '../src/reserves';
 import { scoreOpportunity } from '../src/score';
 import { fetchChainFees } from '../src/sign';
@@ -34,8 +39,8 @@ describe('gas.ts coverage', () => {
 
 describe('reserves.ts coverage', () => {
   it('fetches reserves and filters out failures / zeroes', async () => {
-    const tokenA = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2' as Address;
-    const tokenB = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as Address;
+    const tokenA = '0x1111111111111111111111111111111111111111' as Address;
+    const tokenB = '0x2222222222222222222222222222222222222222' as Address;
 
     const mockClient = {
       multicall: async () => [
@@ -63,7 +68,11 @@ describe('score.ts IO coverage', () => {
       to: '0x2222222222222222222222222222222222222222' as Address,
       deadline: 99999n,
     } as const;
-    const res1 = await scoreOpportunity(mockClient, invalidKind as any, 'uniswap-v2');
+    const res1 = await scoreOpportunity(
+      mockClient,
+      invalidKind as unknown as Parameters<typeof scoreOpportunity>[1],
+      'uniswap-v2',
+    );
     expect(res1).toBeNull();
 
     const shortPath = {
@@ -79,8 +88,8 @@ describe('score.ts IO coverage', () => {
   });
 
   it('scoreOpportunity runs end-to-end with mock multicall & gas', async () => {
-    const tokenA = '0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2' as Address; // WETH
-    const tokenB = '0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48' as Address; // USDC
+    const tokenA = '0x1111111111111111111111111111111111111111' as Address;
+    const tokenB = '0x2222222222222222222222222222222222222222' as Address;
 
     _resetGasCache();
     const mockClient = {
@@ -111,7 +120,7 @@ describe('sign.ts coverage', () => {
   it('fetchChainFees queries tx count and gas price', async () => {
     const account = '0xf39Fd6e51aad88F6F4ce6aB8827279cffFb92266' as Address;
     const mockClient = {
-      getTransactionCount: async ({ address }: { address: Address }) => 5,
+      getTransactionCount: async ({ address: _address }: { address: Address }) => 5,
       getGasPrice: async () => 20_000_000_000n,
     } as unknown as PublicClient;
 
