@@ -41,4 +41,12 @@ describe('DepthMeter', () => {
     expect(screen.getByText('BEDROCK')).toBeTruthy();
     expect(document.body.textContent).toContain('1164');
   });
+
+  it('handles negative/bounce scroll gracefully by falling back to SURFACE', () => {
+    setScroll({ scrollY: -100, scrollHeight: 2000, innerHeight: 800 });
+    render(<DepthMeter />);
+    fireEvent.scroll(window);
+    expect(screen.getByText('SURFACE')).toBeTruthy();
+  });
 });
+

@@ -9,7 +9,7 @@
     "demo": "bun run scripts/demo.ts",
     "replay": "bun run scripts/historical-replay.ts",
     "typecheck": "tsc --noEmit",
-    "test": "bun test",
+    "test": "bun test --coverage",
     "lint": "eslint . --max-warnings 0",
     "lint:fix": "eslint . --fix",
     "format": "prettier --check .",

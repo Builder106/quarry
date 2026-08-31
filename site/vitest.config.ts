@@ -11,5 +11,18 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     include: ["app/**/*.test.{ts,tsx}", "components/**/*.test.{ts,tsx}"],
+    coverage: {
+      provider: "v8",
+      reporter: ["text", "json", "html"],
+      include: ["app/depth-meter.tsx"],
+      exclude: ["app/**/*.test.{ts,tsx}"],
+      thresholds: {
+        statements: 100,
+        branches: 100,
+        functions: 100,
+        lines: 100,
+      },
+    },
   },
 });
+
