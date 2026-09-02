@@ -2,7 +2,7 @@
 pragma solidity 0.8.28;
 
 import {Test} from "forge-std/Test.sol";
-import {MockERC20, MockProfitablePool} from "./mocks/Mocks.sol";
+import {MockERC20, MockProfitablePool, MockDrainingPool} from "./mocks/Mocks.sol";
 
 /// @notice V2 tests for the Yul executor — full two-hop cross-DEX arbitrage
 /// against two mock Uniswap-V2-shaped pools. The fork-replay tests against
@@ -156,5 +156,30 @@ contract ExecutorTest is Test {
         // Ceiling at 100k gives 25k headroom for solar/Solc version drift.
         assertLt(used, 100_000, "two-hop-with-mocks must stay under 100k gas");
         emit log_named_uint("gas: two-hop swap (mocks)", used);
+    }
+
+    function test_DirectSwap_CalldatasizeInvalid_Reverts() public {
+        bytes memory shortPayload = new bytes(219);
+        (bool ok,) = executor.call(shortPayload);
+        assertFalse(ok, "calldatasize < 220 must revert");
+
+        bytes memory longPayload = new bytes(221);
+        (bool ok2,) = executor.call(longPayload);
+        assertFalse(ok2, "calldatasize > 220 must revert");
+    }
+
+    function test_DirectSwap_BalanceDecreased_Reverts() public {
+        weth.mint(executor, 10 ether);
+        MockDrainingPool drainingPool = new MockDrainingPool(weth, usdc, executor, 1 ether);
+        usdc.mint(address(drainingPool), 1000 * 1e6);
+
+        // Both swaps succeed, but the 0.5 WETH returned by pool2 does not
+        // replace the 1 WETH removed during hop 1. With minProfit zero, only
+        // the executor's balance-decrease guard can cause this revert.
+        bytes memory payload = _payload(
+            address(drainingPool), address(pool2), 0, 1000 * 1e6, 0, 0.5 ether, address(weth), 0
+        );
+        (bool ok,) = executor.call(payload);
+        assertFalse(ok, "balanceAfter < balanceBefore must revert");
     }
 }
