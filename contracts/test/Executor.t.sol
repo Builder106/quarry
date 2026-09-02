@@ -170,22 +170,14 @@ contract ExecutorTest is Test {
 
     function test_DirectSwap_BalanceDecreased_Reverts() public {
         weth.mint(executor, 10 ether);
-        MockDrainingPool drainingPool =
-            new MockDrainingPool(weth, usdc, executor, 1 ether);
+        MockDrainingPool drainingPool = new MockDrainingPool(weth, usdc, executor, 1 ether);
         usdc.mint(address(drainingPool), 1000 * 1e6);
 
         // Both swaps succeed, but the 0.5 WETH returned by pool2 does not
         // replace the 1 WETH removed during hop 1. With minProfit zero, only
         // the executor's balance-decrease guard can cause this revert.
         bytes memory payload = _payload(
-            address(drainingPool),
-            address(pool2),
-            0,
-            1000 * 1e6,
-            0,
-            0.5 ether,
-            address(weth),
-            0
+            address(drainingPool), address(pool2), 0, 1000 * 1e6, 0, 0.5 ether, address(weth), 0
         );
         (bool ok,) = executor.call(payload);
         assertFalse(ok, "balanceAfter < balanceBefore must revert");
