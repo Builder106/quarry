@@ -114,7 +114,7 @@ jobs:
         run: bun run typecheck
 
       - name: Test
-        run: bun test
+        run: bun test --coverage --coverage-threshold=100 test/*.test.ts
 
   bot-lint:
     name: bot lint
