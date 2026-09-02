@@ -161,22 +161,14 @@ contract ExecutorFlashloanTest is Test {
 
     function test_Flashloan_BalanceDecreased_Reverts() public {
         weth.mint(executor, 10 ether);
-        MockDrainingPool drainingPool =
-            new MockDrainingPool(weth, usdc, executor, 1 ether);
+        MockDrainingPool drainingPool = new MockDrainingPool(weth, usdc, executor, 1 ether);
         usdc.mint(address(drainingPool), 1000 * 1e6);
 
         // Both swaps succeed, but the returned WETH leaves the executor below
         // its post-loan starting balance. With minProfit zero, only the
         // balance-decrease guard can cause the callback to revert.
         bytes memory params = _params(
-            address(drainingPool),
-            address(pool2),
-            0,
-            1000 * 1e6,
-            0,
-            0.5 ether,
-            address(weth),
-            0
+            address(drainingPool), address(pool2), 0, 1000 * 1e6, 0, 0.5 ether, address(weth), 0
         );
 
         vm.expectRevert();
