@@ -2,7 +2,7 @@
 pragma solidity 0.8.28;
 
 import {Test} from "forge-std/Test.sol";
-import {MockERC20, MockProfitablePool, MockAaveV3Pool} from "./mocks/Mocks.sol";
+import {MockERC20, MockProfitablePool, MockAaveV3Pool, MockDrainingPool} from "./mocks/Mocks.sol";
 
 interface IFlashLoanProvider {
     function flashLoanSimple(
@@ -157,5 +157,30 @@ contract ExecutorFlashloanTest is Test {
         // approve + transferFrom — measure and gate against runaway regression.
         assertLt(used, 200_000, "flashloan-with-mocks must stay under 200k gas");
         emit log_named_uint("gas: flashloan two-hop (mocks)", used);
+    }
+
+    function test_Flashloan_BalanceDecreased_Reverts() public {
+        weth.mint(executor, 10 ether);
+        MockDrainingPool drainingPool =
+            new MockDrainingPool(weth, usdc, executor, 1 ether);
+        usdc.mint(address(drainingPool), 1000 * 1e6);
+
+        // Both swaps succeed, but the returned WETH leaves the executor below
+        // its post-loan starting balance. With minProfit zero, only the
+        // balance-decrease guard can cause the callback to revert.
+        bytes memory params = _params(
+            address(drainingPool),
+            address(pool2),
+            0,
+            1000 * 1e6,
+            0,
+            0.5 ether,
+            address(weth),
+            0
+        );
+
+        vm.expectRevert();
+        IFlashLoanProvider(AAVE_V3_POOL)
+            .flashLoanSimple(executor, address(weth), 1 ether, params, 0);
     }
 }
