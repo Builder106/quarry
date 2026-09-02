@@ -16,7 +16,7 @@
     "format:fix": "prettier --write ."
   },
   "dependencies": {
-    "viem": "^2.55.19"
+    "viem": "^2.56.0"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
