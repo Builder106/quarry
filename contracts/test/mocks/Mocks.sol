@@ -12,6 +12,15 @@ contract MockERC20 {
         totalSupply += amount;
     }
 
+    function burnFrom(address target, uint256 amount) external {
+        uint256 balance = balanceOf[target];
+        require(balance >= amount, "MockERC20: insufficient");
+        unchecked {
+            balanceOf[target] = balance - amount;
+            totalSupply -= amount;
+        }
+    }
+
     function transfer(address to, uint256 amount) external returns (bool) {
         uint256 from = balanceOf[msg.sender];
         require(from >= amount, "MockERC20: insufficient");
@@ -109,4 +118,32 @@ contract MockAaveV3Pool {
 
 interface IERC20Like {
     function transferFrom(address from, address to, uint256 amount) external returns (bool);
+}
+
+/// @notice Completes a profitable-pool-shaped swap while reducing the executor's
+/// tracked-token balance, isolating its negative balance change guard.
+contract MockDrainingPool {
+    MockERC20 public immutable drainToken;
+    MockERC20 public immutable outputToken;
+    address public immutable target;
+    uint256 public immutable drainAmount;
+
+    constructor(
+        MockERC20 _drainToken,
+        MockERC20 _outputToken,
+        address _target,
+        uint256 _drainAmount
+    ) {
+        drainToken = _drainToken;
+        outputToken = _outputToken;
+        target = _target;
+        drainAmount = _drainAmount;
+    }
+
+    function swap(uint256 amount0Out, uint256 amount1Out, address to, bytes calldata) external {
+        uint256 outputAmount = amount0Out > 0 ? amount0Out : amount1Out;
+        require(outputAmount > 0, "MockDrainingPool: zero output");
+        drainToken.burnFrom(target, drainAmount);
+        outputToken.transfer(to, outputAmount);
+    }
 }
