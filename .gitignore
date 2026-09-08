@@ -38,9 +38,3 @@ npm-debug.log*
 # Anvil
 anvil.log
 state.json
-
-# Recordings (large — gitignored, link via README)
-e2e/demo/output/*.mp4
-e2e/demo/output/*.webm
-test-results/
-playwright-report/
