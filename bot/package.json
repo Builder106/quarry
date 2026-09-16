@@ -16,16 +16,16 @@
     "format:fix": "prettier --write ."
   },
   "dependencies": {
-    "viem": "^2.56.3"
+    "viem": "^2.56.5"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/bun": "^1.4.1",
+    "@types/bun": "^1.4.2",
     "eslint": "^10.10.0",
     "eslint-config-prettier": "^10.0.1",
     "prettier": "^3.4.2",
     "prettier-plugin-organize-imports": "^4.1.0",
     "typescript": "~5.7.2",
-    "typescript-eslint": "^8.69.0"
+    "typescript-eslint": "^8.70.0"
   }
 }
