@@ -363,7 +363,7 @@ async function assertSuccess(
 }
 
 
-main().catch((err: unknown) => {
+main().catch((err: Error) => {
     console.error(err);
     process.exit(1);
 });

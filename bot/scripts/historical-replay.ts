@@ -313,7 +313,7 @@ async function main(): Promise<void> {
     }
 }
 
-main().catch((err: unknown) => {
+main().catch((err: Error) => {
     console.error(err);
     process.exit(1);
 });
