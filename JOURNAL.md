@@ -4,6 +4,10 @@
 > things happen — retrospectives need this raw material to land.
 > Reverse-chronological; one paragraph max per entry.
 
+## 2026-10-03 — Resolved transitive dependency audit advisories #fix #security
+
+Bumped Next.js to 16.3.6 and resolved transitive dependencies to remediate vulnerabilities flagged by `bun audit`. Added `brace-expansion` resolution to `^5.0.12` across `bot` and `site`, updated `undici` resolution to `^7.30.0` in `site`, regenerated lockfiles on `ampere-dev`, and added ignore flags for the unpatched dev-only `braces` linter vulnerability (`GHSA-vfj7-8cjw-p6xm`). All typecheck, test, and production build checks pass cleanly.
+
 ## 2026-08-14: Accessible plain-English documentation update #decision
 
 Updated the README headline, summary tagline, and introductory section to explain decentralized exchange arbitrage using a real-world store-to-store price matching analogy. Fixed the broken license badge anchor and removed em dashes while retaining the technical Yul opcode and gas performance benchmarks.
