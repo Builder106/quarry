@@ -17,7 +17,7 @@
     "format:fix": "prettier --write ."
   },
   "dependencies": {
-    "viem": "^2.56.8"
+    "viem": "^2.57.2"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
@@ -25,10 +25,10 @@
     "@typescript/native": "npm:typescript@^7.0.2",
     "eslint": "^10.11.0",
     "eslint-config-prettier": "^10.0.1",
-    "prettier": "^3.9.8",
+    "prettier": "^3.9.9",
     "prettier-plugin-organize-imports": "^4.1.0",
     "typescript": "npm:@typescript/typescript6@6.0.2",
-    "typescript-eslint": "^8.70.0"
+    "typescript-eslint": "^8.71.0"
   },
   "resolutions": {
     "brace-expansion": "^5.0.12"
