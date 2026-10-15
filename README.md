@@ -25,36 +25,9 @@ Quarry operates as a hybrid MEV arbitrage engine. A TypeScript scanner watches E
 
 ## How it works
 
-```mermaid
-sequenceDiagram
-    participant Mempool as Eth Mempool (WS)
-    participant Scanner as Scanner (TS/Bun)
-    participant Math as AMM Math
-    participant Multicall as Multicall3
-    participant Bundle as Bundle Builder
-    participant Yul as Executor (Yul)
-    participant Pool1 as Victim DEX Pool
-    participant Pool2 as Counter DEX Pool
+![Quarry arbitrage scoring and guarded execution](assets/diagrams/arbitrage-flow.png)
 
-    Mempool->>Scanner: pending tx hash
-    Scanner->>Scanner: routerToDex(tx.to) → Dex
-    Scanner->>Scanner: decodeSwap(tx.input)
-    Scanner->>Multicall: getReserves(victimPair, arbPair)
-    Multicall-->>Scanner: (r0, r1) × 2
-    Scanner->>Math: scoreFromRawReserves(swap, victimDex, raw, gasCost)
-    Math->>Math: apply victim → post-victim reserves
-    Math->>Math: solve x* = (r·√K − R1in·R2in) / (r·(R2in + r·R1out))
-    Math-->>Scanner: ScoredArb { amountIn, intermediateOut, expectedOut, profit }
-    Scanner->>Bundle: buildExecutorCalldata(arb)
-    Scanner->>Bundle: signExecutorTx(eip1559)
-    Bundle->>Yul: execute(packed 220-byte calldata)
-    Yul->>Pool1: swap(a0Out, a1Out, to=Pool2, "")
-    Pool1->>Pool2: transfer intermediate
-    Yul->>Pool2: swap(a0Out, a1Out, to=this, "")
-    Pool2->>Yul: transfer base
-    Yul->>Yul: assert balanceAfter ≥ balanceBefore + minProfit
-    Yul-->>Bundle: profit OR revert(0,0)
-```
+The scanner decodes a pending swap, reads both pools through Multicall3, and scores the post-victim reserves. A signed EIP-1559 bundle sends packed 220-byte calldata to the Yul executor. The executor swaps on the victim pool with `to=Pool2`, then swaps on the counter pool with `to=this`. The call returns profit only if the final balance covers `minProfit`; otherwise it reverts. [Editable HTML source](assets/diagrams/arbitrage-flow.html).
 
 The executor is built in monolithic Yul bytecode without heavy framework overhead. Data is read directly as a tightly packed byte string. Pool 1's output flows directly to pool 2 (a classic decentralized exchange optimization where tokens transfer straight between liquidity pools, skipping intermediate transfers to save transaction fees). A balance snapshot at entry and exit guards the trade: if the price difference disappears before the transaction completes, the entire transaction cancels automatically with zero loss of funds.
 

@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>From pending swap to guarded execution</title>
+<style>body{margin:0;padding:24px;background:#F8FAFC;color:#251C12;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:960px;min-width:0;margin:0 auto}.figure-scroll{width:100%;overflow-x:auto}svg{display:block;width:100%;min-width:960px}@media print{.figure-scroll{overflow-x:visible}svg{min-width:0}}</style></head>
+<body><main><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="arbitrage-flow-title arbitrage-flow-desc">
+<title id="arbitrage-flow-title">From pending swap to guarded execution</title>
+<desc id="arbitrage-flow-desc">Off-chain scoring hands a signed opportunity to the on-chain executor. x* = (r√K − R1in·R2in) / (r·(R2in + r·R1out)); scored fields: amountIn, intermediateOut, expectedOut, profit. Executor requires balanceAfter ≥ balanceBefore + minProfit.</desc>
+<defs><marker id="arbitrage-flow-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#A36B1D" stroke-width="1.5"/></marker></defs>
+<rect width="960" height="600" fill="#FFFFFF"/>
+<text x="40" y="52" font-size="27" font-weight="700" fill="#251C12">From pending swap to guarded execution</text>
+<text x="40" y="80" font-size="14" font-weight="400" fill="#475569">Off-chain scoring hands a signed opportunity to the on-chain executor.</text>
+<line x1="40" y1="94" x2="920" y2="94" stroke="#CBD5E1"/>
+<rect x="40" y="112" width="880" height="190" rx="8" fill="#F8FAFC" stroke="#D5DDE5"/>
+<rect x="40" y="324" width="880" height="200" rx="8" fill="#F8FAFC" stroke="#D5DDE5"/>
+<path d="M236 212 H290" fill="none" stroke="#A36B1D" stroke-width="1.8" marker-end="url(#arbitrage-flow-arrow)"/>
+<path d="M490 212 H540" fill="none" stroke="#A36B1D" stroke-width="1.8" marker-end="url(#arbitrage-flow-arrow)"/>
+<path d="M740 212 H774" fill="none" stroke="#A36B1D" stroke-width="1.8" marker-end="url(#arbitrage-flow-arrow)"/>
+<path d="M846 270 V356" fill="none" stroke="#A36B1D" stroke-width="1.8" marker-end="url(#arbitrage-flow-arrow)"/>
+<path d="M758 420 H696" fill="none" stroke="#A36B1D" stroke-width="1.8" marker-end="url(#arbitrage-flow-arrow)"/>
+<path d="M520 420 H458" fill="none" stroke="#A36B1D" stroke-width="1.8" marker-end="url(#arbitrage-flow-arrow)"/>
+<path d="M280 420 H226" fill="none" stroke="#A36B1D" stroke-width="1.8" marker-end="url(#arbitrage-flow-arrow)"/>
+<text x="56" y="139" font-size="15" font-weight="700" fill="#251C12">Off-chain: detect and score</text>
+<text x="56" y="351" font-size="15" font-weight="700" fill="#251C12">On-chain: execute and enforce</text>
+<rect x="60" y="160" width="176" height="110" rx="6" fill="#FFFFFF" stroke="#B8C5D2" stroke-width="1.2"/>
+<text x="74" y="187" font-size="15" font-weight="700" fill="#251C12">Scanner</text>
+<text x="74" y="210" font-size="12" font-weight="400" fill="#251C12">WS pending hash</text>
+<text x="74" y="227" font-size="12" font-weight="400" fill="#251C12">Router + swap decode</text>
+<rect x="290" y="160" width="200" height="110" rx="6" fill="#FFFFFF" stroke="#B8C5D2" stroke-width="1.2"/>
+<text x="304" y="187" font-size="15" font-weight="700" fill="#251C12">Multicall3</text>
+<text x="304" y="210" font-size="12" font-weight="400" fill="#251C12">Victim + arb reserves</text>
+<text x="304" y="227" font-size="12" font-weight="400" fill="#251C12">(r0, r1) × 2</text>
+<rect x="540" y="150" width="200" height="130" rx="6" fill="#FFF4DF" stroke="#A36B1D" stroke-width="1.2"/>
+<text x="554" y="177" font-size="15" font-weight="700" fill="#251C12">AMM math</text>
+<text x="554" y="200" font-size="12" font-weight="400" fill="#251C12">Post-victim reserves</text>
+<text x="554" y="217" font-size="12" font-weight="400" fill="#251C12">Solve x*; score profit</text>
+<rect x="774" y="160" width="126" height="110" rx="6" fill="#FFFFFF" stroke="#B8C5D2" stroke-width="1.2"/>
+<text x="788" y="187" font-size="15" font-weight="700" fill="#251C12">Bundle</text>
+<text x="788" y="210" font-size="12" font-weight="400" fill="#251C12">Calldata</text>
+<text x="788" y="227" font-size="12" font-weight="400" fill="#251C12">EIP-1559 sign</text>
+<rect x="758" y="356" width="142" height="130" rx="6" fill="#FFF4DF" stroke="#A36B1D" stroke-width="1.2"/>
+<text x="772" y="383" font-size="15" font-weight="700" fill="#251C12">Yul executor</text>
+<text x="772" y="406" font-size="12" font-weight="400" fill="#251C12">220-byte input</text>
+<text x="772" y="423" font-size="12" font-weight="400" fill="#251C12">Profit guard</text>
+<rect x="520" y="356" width="176" height="130" rx="6" fill="#FFFFFF" stroke="#B8C5D2" stroke-width="1.2"/>
+<text x="534" y="383" font-size="15" font-weight="700" fill="#251C12">Victim pool</text>
+<text x="534" y="406" font-size="12" font-weight="400" fill="#251C12">First swap</text>
+<text x="534" y="423" font-size="12" font-weight="400" fill="#251C12">Send intermediate</text>
+<rect x="280" y="356" width="178" height="130" rx="6" fill="#FFFFFF" stroke="#B8C5D2" stroke-width="1.2"/>
+<text x="294" y="383" font-size="15" font-weight="700" fill="#251C12">Counter pool</text>
+<text x="294" y="406" font-size="12" font-weight="400" fill="#251C12">Second swap</text>
+<text x="294" y="423" font-size="12" font-weight="400" fill="#251C12">Return base</text>
+<rect x="60" y="356" width="166" height="130" rx="6" fill="#FFFFFF" stroke="#B8C5D2" stroke-width="1.2"/>
+<text x="74" y="383" font-size="15" font-weight="700" fill="#251C12">Result</text>
+<text x="74" y="406" font-size="12" font-weight="400" fill="#251C12">Profit</text>
+<text x="74" y="423" font-size="12" font-weight="400" fill="#251C12">or revert(0,0)</text>
+<line x1="40" y1="542" x2="920" y2="542" stroke="#CBD5E1"/>
+<text x="40" y="566" font-size="12" font-weight="400" fill="#475569">x* = (r√K − R1in·R2in) / (r·(R2in + r·R1out)); scored fields: amountIn, intermediateOut, expectedOut, profit.</text>
+<text x="40" y="584" font-size="12" font-weight="400" fill="#475569">Executor requires balanceAfter ≥ balanceBefore + minProfit.</text>
+</svg></div></main></body></html>
