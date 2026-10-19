@@ -1,58 +1,292 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>From pending swap to guarded execution</title>
-<style>body{margin:0;padding:24px;background:#F8FAFC;color:#251C12;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}main{max-width:960px;min-width:0;margin:0 auto}.figure-scroll{width:100%;overflow-x:auto}svg{display:block;width:100%;min-width:960px}@media print{.figure-scroll{overflow-x:visible}svg{min-width:0}}</style></head>
-<body><main><div class="figure-scroll"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 600" role="img" aria-labelledby="arbitrage-flow-title arbitrage-flow-desc">
-<title id="arbitrage-flow-title">From pending swap to guarded execution</title>
-<desc id="arbitrage-flow-desc">Off-chain scoring hands a signed opportunity to the on-chain executor. x* = (r√K − R1in·R2in) / (r·(R2in + r·R1out)); scored fields: amountIn, intermediateOut, expectedOut, profit. Executor requires balanceAfter ≥ balanceBefore + minProfit.</desc>
-<defs><marker id="arbitrage-flow-arrow" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="8" markerHeight="8" orient="auto"><path d="M1 1 L7 4 L1 7" fill="none" stroke="#A36B1D" stroke-width="1.5"/></marker></defs>
-<rect width="960" height="600" fill="#FFFFFF"/>
-<text x="40" y="52" font-size="27" font-weight="700" fill="#251C12">From pending swap to guarded execution</text>
-<text x="40" y="80" font-size="14" font-weight="400" fill="#475569">Off-chain scoring hands a signed opportunity to the on-chain executor.</text>
-<line x1="40" y1="94" x2="920" y2="94" stroke="#CBD5E1"/>
-<rect x="40" y="112" width="880" height="190" rx="8" fill="#F8FAFC" stroke="#D5DDE5"/>
-<rect x="40" y="324" width="880" height="200" rx="8" fill="#F8FAFC" stroke="#D5DDE5"/>
-<path d="M236 212 H290" fill="none" stroke="#A36B1D" stroke-width="1.8" marker-end="url(#arbitrage-flow-arrow)"/>
-<path d="M490 212 H540" fill="none" stroke="#A36B1D" stroke-width="1.8" marker-end="url(#arbitrage-flow-arrow)"/>
-<path d="M740 212 H774" fill="none" stroke="#A36B1D" stroke-width="1.8" marker-end="url(#arbitrage-flow-arrow)"/>
-<path d="M846 270 V356" fill="none" stroke="#A36B1D" stroke-width="1.8" marker-end="url(#arbitrage-flow-arrow)"/>
-<path d="M758 420 H696" fill="none" stroke="#A36B1D" stroke-width="1.8" marker-end="url(#arbitrage-flow-arrow)"/>
-<path d="M520 420 H458" fill="none" stroke="#A36B1D" stroke-width="1.8" marker-end="url(#arbitrage-flow-arrow)"/>
-<path d="M280 420 H226" fill="none" stroke="#A36B1D" stroke-width="1.8" marker-end="url(#arbitrage-flow-arrow)"/>
-<text x="56" y="139" font-size="15" font-weight="700" fill="#251C12">Off-chain: detect and score</text>
-<text x="56" y="351" font-size="15" font-weight="700" fill="#251C12">On-chain: execute and enforce</text>
-<rect x="60" y="160" width="176" height="110" rx="6" fill="#FFFFFF" stroke="#B8C5D2" stroke-width="1.2"/>
-<text x="74" y="187" font-size="15" font-weight="700" fill="#251C12">Scanner</text>
-<text x="74" y="210" font-size="12" font-weight="400" fill="#251C12">WS pending hash</text>
-<text x="74" y="227" font-size="12" font-weight="400" fill="#251C12">Router + swap decode</text>
-<rect x="290" y="160" width="200" height="110" rx="6" fill="#FFFFFF" stroke="#B8C5D2" stroke-width="1.2"/>
-<text x="304" y="187" font-size="15" font-weight="700" fill="#251C12">Multicall3</text>
-<text x="304" y="210" font-size="12" font-weight="400" fill="#251C12">Victim + arb reserves</text>
-<text x="304" y="227" font-size="12" font-weight="400" fill="#251C12">(r0, r1) × 2</text>
-<rect x="540" y="150" width="200" height="130" rx="6" fill="#FFF4DF" stroke="#A36B1D" stroke-width="1.2"/>
-<text x="554" y="177" font-size="15" font-weight="700" fill="#251C12">AMM math</text>
-<text x="554" y="200" font-size="12" font-weight="400" fill="#251C12">Post-victim reserves</text>
-<text x="554" y="217" font-size="12" font-weight="400" fill="#251C12">Solve x*; score profit</text>
-<rect x="774" y="160" width="126" height="110" rx="6" fill="#FFFFFF" stroke="#B8C5D2" stroke-width="1.2"/>
-<text x="788" y="187" font-size="15" font-weight="700" fill="#251C12">Bundle</text>
-<text x="788" y="210" font-size="12" font-weight="400" fill="#251C12">Calldata</text>
-<text x="788" y="227" font-size="12" font-weight="400" fill="#251C12">EIP-1559 sign</text>
-<rect x="758" y="356" width="142" height="130" rx="6" fill="#FFF4DF" stroke="#A36B1D" stroke-width="1.2"/>
-<text x="772" y="383" font-size="15" font-weight="700" fill="#251C12">Yul executor</text>
-<text x="772" y="406" font-size="12" font-weight="400" fill="#251C12">220-byte input</text>
-<text x="772" y="423" font-size="12" font-weight="400" fill="#251C12">Profit guard</text>
-<rect x="520" y="356" width="176" height="130" rx="6" fill="#FFFFFF" stroke="#B8C5D2" stroke-width="1.2"/>
-<text x="534" y="383" font-size="15" font-weight="700" fill="#251C12">Victim pool</text>
-<text x="534" y="406" font-size="12" font-weight="400" fill="#251C12">First swap</text>
-<text x="534" y="423" font-size="12" font-weight="400" fill="#251C12">Send intermediate</text>
-<rect x="280" y="356" width="178" height="130" rx="6" fill="#FFFFFF" stroke="#B8C5D2" stroke-width="1.2"/>
-<text x="294" y="383" font-size="15" font-weight="700" fill="#251C12">Counter pool</text>
-<text x="294" y="406" font-size="12" font-weight="400" fill="#251C12">Second swap</text>
-<text x="294" y="423" font-size="12" font-weight="400" fill="#251C12">Return base</text>
-<rect x="60" y="356" width="166" height="130" rx="6" fill="#FFFFFF" stroke="#B8C5D2" stroke-width="1.2"/>
-<text x="74" y="383" font-size="15" font-weight="700" fill="#251C12">Result</text>
-<text x="74" y="406" font-size="12" font-weight="400" fill="#251C12">Profit</text>
-<text x="74" y="423" font-size="12" font-weight="400" fill="#251C12">or revert(0,0)</text>
-<line x1="40" y1="542" x2="920" y2="542" stroke="#CBD5E1"/>
-<text x="40" y="566" font-size="12" font-weight="400" fill="#475569">x* = (r√K − R1in·R2in) / (r·(R2in + r·R1out)); scored fields: amountIn, intermediateOut, expectedOut, profit.</text>
-<text x="40" y="584" font-size="12" font-weight="400" fill="#475569">Executor requires balanceAfter ≥ balanceBefore + minProfit.</text>
-</svg></div></main></body></html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Quarry MEV Pipeline: Pending Swap to Guarded Settlement</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: #FFFFFF;
+      --bg-subtle: #F8FAFC;
+      --panel: #FFFFFF;
+      --panel-border: #E2E8F0;
+      --panel-border-subtle: #EDF2F7;
+      
+      --ink: #0F172A;
+      --ink-secondary: #475569;
+      --ink-muted: #64748B;
+      
+      --primary: #2563EB;
+      --primary-tint: rgba(37, 99, 235, 0.08);
+      --primary-border: #93C5FD;
+      
+      --success: #059669;
+      --success-tint: rgba(5, 150, 105, 0.08);
+      --success-border: #6EE7B7;
+      
+      --error: #DC2626;
+      --error-tint: rgba(220, 38, 38, 0.08);
+      --error-border: #FCA5A5;
+      
+      --warning: #D97706;
+      --warning-tint: rgba(217, 119, 6, 0.08);
+      --warning-border: #FCD34D;
+      
+      --conduit: #64748B;
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      --font-mono: ui-monospace, "SF Mono", Menlo, Monaco, Consolas, monospace;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        color-scheme: dark;
+        --bg: #0B0F17;
+        --bg-subtle: #111827;
+        --panel: #161F30;
+        --panel-border: #2D3B55;
+        --panel-border-subtle: #1E293B;
+        
+        --ink: #F8FAFC;
+        --ink-secondary: #CBD5E1;
+        --ink-muted: #94A3B8;
+        
+        --primary: #38BDF8;
+        --primary-tint: rgba(56, 189, 248, 0.12);
+        --primary-border: #0284C7;
+        
+        --success: #34D399;
+        --success-tint: rgba(52, 211, 153, 0.12);
+        --success-border: #059669;
+        
+        --error: #F87171;
+        --error-tint: rgba(248, 113, 113, 0.12);
+        --error-border: #B91C1C;
+        
+        --warning: #FBBF24;
+        --warning-tint: rgba(251, 191, 36, 0.12);
+        --warning-border: #D97706;
+        
+        --conduit: #475569;
+      }
+    }
+    html, body {
+      margin: 0;
+      padding: 0;
+      background: var(--bg);
+      color: var(--ink);
+      font-family: var(--font-sans);
+    }
+    .figure-scroll {
+      max-width: 960px;
+      margin: 20px auto;
+      overflow-x: auto;
+    }
+    svg {
+      display: block;
+      width: 100%;
+      min-width: 960px;
+    }
+    @media print {
+      .figure-scroll { overflow-x: visible; }
+      svg { min-width: 0; }
+    }
+  </style>
+</head>
+<body>
+  <main>
+    <div class="figure-scroll">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 620" role="img" aria-labelledby="quarry-title quarry-desc">
+        <title id="quarry-title">Quarry MEV Pipeline: Pending Swap to Guarded Settlement</title>
+        <desc id="quarry-desc">Off-chain detection watches mempool swaps, simulates post-victim reserves via Multicall3, and signs 220-byte packed calldata. The on-chain Yul executor routes hops across AMM pools and enforces balanceAfter >= balanceBefore + minProfit, otherwise invoking revert(0,0).</desc>
+        
+        <defs>
+          <marker id="arrow-primary" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 1,1 L 7,4 L 1,7" fill="none" stroke="var(--primary)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="arrow-success" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 1,1 L 7,4 L 1,7" fill="none" stroke="var(--success)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="arrow-error" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 1,1 L 7,4 L 1,7" fill="none" stroke="var(--error)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+          <marker id="arrow-conduit" viewBox="0 0 8 8" refX="7" refY="4" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M 1,1 L 7,4 L 1,7" fill="none" stroke="var(--conduit)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </marker>
+        </defs>
+
+        <!-- Canvas Background -->
+        <rect width="960" height="620" fill="var(--bg)"/>
+
+        <!-- Header -->
+        <text x="40" y="48" font-size="24" font-weight="700" fill="var(--ink)">Quarry Arbitrage Pipeline</text>
+        <text x="40" y="70" font-size="13" font-weight="400" fill="var(--ink-secondary)">From pending mempool swap decode to zero-revert on-chain settlement.</text>
+        <line x1="40" y1="84" x2="920" y2="84" stroke="var(--panel-border)" stroke-width="1"/>
+
+        <!-- Boundary Containers -->
+        <!-- Tier 1: Off-Chain Detection & Solving -->
+        <rect x="40" y="98" width="880" height="210" rx="6" fill="var(--bg-subtle)" stroke="var(--panel-border)" stroke-width="1"/>
+        <text x="56" y="122" font-family="var(--font-mono)" font-size="11" font-weight="700" fill="var(--primary)" letter-spacing="0.05em">OFF-CHAIN: INGEST, SOLVE & BUNDLE</text>
+
+        <!-- Tier 2: On-Chain Atomic Execution & Settlement -->
+        <rect x="40" y="322" width="880" height="252" rx="6" fill="var(--bg-subtle)" stroke="var(--panel-border)" stroke-width="1"/>
+        <text x="56" y="346" font-family="var(--font-mono)" font-size="11" font-weight="700" fill="var(--success)" letter-spacing="0.05em">ON-CHAIN: ATOMIC EXECUTION & PROFIT GUARD</text>
+
+        <!-- ==================== OFF-CHAIN COMPONENTS ==================== -->
+
+        <!-- 1. Mempool Queue Primitive (x: 56, y: 140) -->
+        <g transform="translate(56, 140)">
+          <path d="M 0,0 H 160 V 58 H 0" fill="none" stroke="var(--panel-border)" stroke-width="1.5" />
+          <rect x="0" y="0" width="160" height="58" fill="var(--panel)" stroke="none" opacity="0.8"/>
+          <!-- Message items -->
+          <rect x="115" y="10" width="36" height="38" rx="3" fill="var(--warning-tint)" stroke="var(--warning-border)" stroke-width="1.2" />
+          <text x="133" y="27" text-anchor="middle" font-family="var(--font-mono)" font-size="9" font-weight="700" fill="var(--warning)">tx*</text>
+          <text x="133" y="40" text-anchor="middle" font-family="var(--font-mono)" font-size="8" fill="var(--warning)">swap</text>
+
+          <rect x="68" y="10" width="36" height="38" rx="3" fill="var(--panel)" stroke="var(--panel-border)" stroke-width="1.2" />
+          <text x="86" y="33" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--ink-muted)">tx_a</text>
+
+          <rect x="20" y="10" width="36" height="38" rx="3" fill="var(--panel)" stroke="var(--panel-border)" stroke-width="1.2" />
+          <text x="38" y="33" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--ink-muted)">tx_b</text>
+
+          <text x="0" y="-8" font-family="var(--font-mono)" font-size="10" font-weight="600" fill="var(--ink-secondary)">WebSocket Pending Stream</text>
+          <text x="0" y="74" font-family="var(--font-mono)" font-size="10" fill="var(--ink-muted)">Router calldata decoded</text>
+        </g>
+
+        <!-- Connector: Mempool to Multicall -->
+        <path d="M 216,169 H 250" fill="none" stroke="var(--primary)" stroke-width="1.5" marker-end="url(#arrow-primary)"/>
+
+        <!-- 2. Multicall3 State Sync (x: 250, y: 136) -->
+        <g transform="translate(250, 136)">
+          <rect x="0" y="0" width="170" height="84" rx="4" fill="var(--panel)" stroke="var(--panel-border)" stroke-width="1.2"/>
+          <text x="14" y="24" font-family="var(--font-sans)" font-size="14" font-weight="700" fill="var(--ink)">Multicall3 Engine</text>
+          <text x="14" y="44" font-family="var(--font-mono)" font-size="11" fill="var(--ink-secondary)">victim (r₀, r₁) reserves</text>
+          <text x="14" y="60" font-family="var(--font-mono)" font-size="11" fill="var(--ink-secondary)">counter (r₀, r₁) reserves</text>
+          <text x="14" y="75" font-family="var(--font-mono)" font-size="9" font-weight="600" fill="var(--primary)">Atomic 1-RPC batch</text>
+        </g>
+
+        <!-- Connector: Multicall to AMM Math Solver -->
+        <path d="M 420,178 H 456" fill="none" stroke="var(--primary)" stroke-width="1.5" marker-end="url(#arrow-primary)"/>
+
+        <!-- 3. AMM Math Analytical Solver (x: 456, y: 136) -->
+        <g transform="translate(456, 136)">
+          <rect x="0" y="0" width="204" height="84" rx="4" fill="var(--primary-tint)" stroke="var(--primary-border)" stroke-width="1.2"/>
+          <text x="14" y="24" font-family="var(--font-sans)" font-size="14" font-weight="700" fill="var(--ink)">AMM Math Solver</text>
+          <text x="14" y="44" font-family="var(--font-mono)" font-size="11" font-weight="600" fill="var(--primary)">x* = (r√K − R₁in·R₂in)/...</text>
+          <text x="14" y="60" font-family="var(--font-mono)" font-size="11" fill="var(--ink-secondary)">Post-victim state projection</text>
+          <text x="14" y="75" font-family="var(--font-mono)" font-size="10" font-weight="700" fill="var(--success)">Net Profit &gt; Gas Threshold</text>
+        </g>
+
+        <!-- Connector: AMM Math to Bundle Signer -->
+        <path d="M 660,178 H 696" fill="none" stroke="var(--primary)" stroke-width="1.5" marker-end="url(#arrow-primary)"/>
+
+        <!-- 4. Bundle Signer & Calldata Contract (x: 696, y: 122) -->
+        <g transform="translate(696, 122)">
+          <rect x="0" y="0" width="208" height="112" rx="4" fill="var(--panel)" stroke="var(--panel-border)" stroke-width="1.2"/>
+          <rect x="0" y="0" width="208" height="26" rx="4" fill="var(--bg-subtle)" stroke="none"/>
+          <line x1="0" y1="26" x2="208" y2="26" stroke="var(--panel-border)" stroke-width="1"/>
+          
+          <text x="10" y="18" font-family="var(--font-mono)" font-size="11" font-weight="700" fill="var(--ink)">EIP-1559 Bundle</text>
+          <rect x="146" y="6" width="52" height="15" rx="2" fill="var(--primary-tint)" stroke="var(--primary-border)" stroke-width="0.8"/>
+          <text x="172" y="17" text-anchor="middle" font-family="var(--font-mono)" font-size="9" font-weight="700" fill="var(--primary)">220 Bytes</text>
+
+          <!-- Schema contract fields -->
+          <text x="10" y="44" font-family="var(--font-mono)" font-size="10" fill="var(--ink-secondary)">amountIn: uint128</text>
+          <text x="10" y="58" font-family="var(--font-mono)" font-size="10" fill="var(--ink-secondary)">minProfit: uint128</text>
+          <text x="10" y="72" font-family="var(--font-mono)" font-size="10" fill="var(--ink-secondary)">poolVictim: address</text>
+          <text x="10" y="86" font-family="var(--font-mono)" font-size="10" fill="var(--ink-secondary)">poolCounter: address</text>
+          <text x="10" y="102" font-family="var(--font-mono)" font-size="9" font-weight="600" fill="var(--primary)">Flashbots Private Relay</text>
+        </g>
+
+        <!-- Boundary Transit Conduit: Off-Chain to On-Chain -->
+        <path d="M 800,234 V 356" fill="none" stroke="var(--primary)" stroke-width="2" marker-end="url(#arrow-primary)"/>
+        <text x="808" y="295" font-family="var(--font-mono)" font-size="10" font-weight="700" fill="var(--primary)">EVM Execution</text>
+
+        <!-- ==================== ON-CHAIN COMPONENTS ==================== -->
+
+        <!-- 5. Yul Executor Contract (x: 720, y: 356) -->
+        <g transform="translate(720, 356)">
+          <rect x="0" y="0" width="160" height="96" rx="4" fill="var(--primary-tint)" stroke="var(--primary)" stroke-width="1.5"/>
+          <text x="14" y="24" font-family="var(--font-sans)" font-size="14" font-weight="700" fill="var(--ink)">Yul Executor</text>
+          <text x="14" y="44" font-family="var(--font-mono)" font-size="11" fill="var(--ink-secondary)">calldataload unpack</text>
+          <text x="14" y="60" font-family="var(--font-mono)" font-size="11" fill="var(--ink-secondary)">balanceBefore cache</text>
+          <text x="14" y="78" font-family="var(--font-mono)" font-size="10" font-weight="600" fill="var(--primary)">Direct EVM bytecode</text>
+        </g>
+
+        <!-- Hop 1 Conduit: Yul to Pool 1 -->
+        <path d="M 720,404 H 652" fill="none" stroke="var(--primary)" stroke-width="2" marker-end="url(#arrow-primary)"/>
+        <text x="686" y="394" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--ink-secondary)">swap(x*)</text>
+
+        <!-- 6. Pool 1 Cylinder Primitive: Victim AMM Pool (x: 486, y: 356) -->
+        <g transform="translate(486, 356)">
+          <!-- Cylinder body: 150x96 -->
+          <path d="M 0,14 A 75,14 0 0,0 150,14 V 82 A 75,14 0 0,1 0,82 Z" 
+                fill="var(--panel)" stroke="var(--panel-border)" stroke-width="1.5" />
+          <path d="M 0,48 A 75,14 0 0,0 150,48" 
+                fill="none" stroke="var(--panel-border-subtle)" stroke-width="1.2" stroke-dasharray="3 3" />
+          <ellipse cx="75" cy="14" rx="75" ry="14" 
+                   fill="var(--bg-subtle)" stroke="var(--panel-border)" stroke-width="1.5" />
+          <text x="75" y="40" text-anchor="middle" font-family="var(--font-sans)" font-size="13" font-weight="700" fill="var(--ink)">Victim Pool</text>
+          <text x="75" y="58" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--ink-secondary)">to = CounterPool</text>
+          <text x="75" y="74" text-anchor="middle" font-family="var(--font-mono)" font-size="10" font-weight="600" fill="var(--primary)">Intermediate Out</text>
+        </g>
+
+        <!-- Hop 2 Conduit: Pool 1 to Pool 2 -->
+        <path d="M 486,404 H 418" fill="none" stroke="var(--primary)" stroke-width="2" marker-end="url(#arrow-primary)"/>
+        <text x="452" y="394" text-anchor="middle" font-family="var(--font-mono)" font-size="9" fill="var(--ink-secondary)">direct token</text>
+
+        <!-- 7. Pool 2 Cylinder Primitive: Counter AMM Pool (x: 252, y: 356) -->
+        <g transform="translate(252, 356)">
+          <!-- Cylinder body: 150x96 -->
+          <path d="M 0,14 A 75,14 0 0,0 150,14 V 82 A 75,14 0 0,1 0,82 Z" 
+                fill="var(--panel)" stroke="var(--panel-border)" stroke-width="1.5" />
+          <path d="M 0,48 A 75,14 0 0,0 150,48" 
+                fill="none" stroke="var(--panel-border-subtle)" stroke-width="1.2" stroke-dasharray="3 3" />
+          <ellipse cx="75" cy="14" rx="75" ry="14" 
+                   fill="var(--bg-subtle)" stroke="var(--panel-border)" stroke-width="1.5" />
+          <text x="75" y="40" text-anchor="middle" font-family="var(--font-sans)" font-size="13" font-weight="700" fill="var(--ink)">Counter Pool</text>
+          <text x="75" y="58" text-anchor="middle" font-family="var(--font-mono)" font-size="10" fill="var(--ink-secondary)">to = YulExecutor</text>
+          <text x="75" y="74" text-anchor="middle" font-family="var(--font-mono)" font-size="10" font-weight="600" fill="var(--success)">Base Asset Returned</text>
+        </g>
+
+        <!-- Conduit to Guard Knot -->
+        <path d="M 252,404 H 194" fill="none" stroke="var(--primary)" stroke-width="2" marker-end="url(#arrow-primary)"/>
+
+        <!-- 8. Profit Guard Decision Diamond (x: 84, y: 354) -->
+        <g transform="translate(84, 354)">
+          <!-- Diamond 100x100 centered around (50, 50) -->
+          <path d="M 50,0 L 100,50 L 50,100 L 0,50 Z" 
+                fill="var(--warning-tint)" stroke="var(--warning)" stroke-width="1.5" />
+          <text x="50" y="44" text-anchor="middle" font-family="var(--font-sans)" font-size="11" font-weight="700" fill="var(--ink)">Balance ≥</text>
+          <text x="50" y="58" text-anchor="middle" font-family="var(--font-mono)" font-size="10" font-weight="600" fill="var(--warning)">minProfit?</text>
+        </g>
+
+        <!-- PASS / SETTLE LOOP (Left & Up to Treasury / Settled State) -->
+        <path d="M 84,404 H 56 V 492 H 230" fill="none" stroke="var(--success)" stroke-width="2" marker-end="url(#arrow-success)"/>
+        <text x="64" y="448" font-family="var(--font-mono)" font-size="10" font-weight="700" fill="var(--success)">PASS</text>
+
+        <!-- Settle Node (x: 230, y: 470) -->
+        <g transform="translate(230, 470)">
+          <rect x="0" y="0" width="172" height="44" rx="4" fill="var(--success-tint)" stroke="var(--success)" stroke-width="1.5"/>
+          <text x="14" y="22" font-family="var(--font-sans)" font-size="12" font-weight="700" fill="var(--ink)">Treasury Settlement</text>
+          <text x="14" y="36" font-family="var(--font-mono)" font-size="10" font-weight="600" fill="var(--success)">+ Net Profit Captured</text>
+        </g>
+
+        <!-- FAIL / REVERT ESCAPE BRANCH (Straight Down) -->
+        <path d="M 134,454 V 500" fill="none" stroke="var(--error)" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow-error)"/>
+        <text x="142" y="480" font-family="var(--font-mono)" font-size="10" font-weight="700" fill="var(--error)">FAIL</text>
+
+        <!-- Revert Node (x: 94, y: 500) -->
+        <g transform="translate(94, 500)">
+          <rect x="0" y="0" width="104" height="34" rx="4" fill="var(--error-tint)" stroke="var(--error)" stroke-width="1.2"/>
+          <text x="52" y="16" text-anchor="middle" font-family="var(--font-mono)" font-size="10" font-weight="700" fill="var(--error)">revert(0, 0)</text>
+          <text x="52" y="28" text-anchor="middle" font-family="var(--font-mono)" font-size="8" fill="var(--ink-muted)">Zero Gas Sunk</text>
+        </g>
+
+        <!-- Footnote / Formula line -->
+        <line x1="40" y1="586" x2="920" y2="586" stroke="var(--panel-border)" stroke-width="1"/>
+        <text x="40" y="604" font-size="11" font-family="var(--font-mono)" fill="var(--ink-muted)">Invariant: x* = (r√K − R₁in·R₂in)/(r(R₂in + r·R₁out)). Calldata: 220B packed. Pre/post balance invariant enforced at EVM boundary.</text>
+      </svg>
+    </div>
+  </main>
+</body>
+</html>

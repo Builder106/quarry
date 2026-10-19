@@ -25,7 +25,10 @@ Quarry operates as a hybrid MEV arbitrage engine. A TypeScript scanner watches E
 
 ## How it works
 
-![Quarry arbitrage scoring and guarded execution](assets/diagrams/arbitrage-flow.png)
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="assets/diagrams/arbitrage-flow-dark.png">
+  <img src="assets/diagrams/arbitrage-flow.png" alt="Quarry arbitrage scoring and guarded execution">
+</picture>
 
 The scanner decodes a pending swap, reads both pools through Multicall3, and scores the post-victim reserves. A signed EIP-1559 bundle sends packed 220-byte calldata to the Yul executor. The executor swaps on the victim pool with `to=Pool2`, then swaps on the counter pool with `to=this`. The call returns profit only if the final balance covers `minProfit`; otherwise it reverts. [Editable HTML source](assets/diagrams/arbitrage-flow.html).
 
