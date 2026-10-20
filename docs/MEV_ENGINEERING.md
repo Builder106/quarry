@@ -18,22 +18,22 @@ The on-chain leg is written in pure Yul (188 bytes of runtime bytecode) to minim
 
 ```mermaid
 sequenceDiagram
-    participant Mempool as Mempool Scanner (Bun/TS)
-    participant Yul as Yul Executor Contract (188 B)
-    participant Pool1 as Victim DEX Pair
-    participant Pool2 as Counter DEX Pair
+    participant Mempool as Bot transaction
+    participant Yul as Yul executor (188 B)
+    participant Pool1 as Victim pair
+    participant Pool2 as Counter pair
 
-    Mempool->>Yul: Execute packed 220-byte calldata
-    Yul->>Yul: Extract parameters directly via calldataload
+    Mempool->>Yul: Packed 220-byte calldata
+    Yul->>Yul: Read fields with calldataload
     Yul->>Pool1: swap(amount0Out, amount1Out, to=Pool2, data="")
     Pool1->>Pool2: Transfer intermediate token directly
     Yul->>Pool2: swap(amount0Out, amount1Out, to=this, data="")
     Pool2->>Yul: Transfer base token output
-    Yul->>Yul: Assert final balance >= initial balance + minProfit
-    alt Unprofitable Arbitrage
-        Yul-->>Mempool: Revert (0, 0)
-    else Profitable Arbitrage
-        Yul-->>Mempool: Realized Profit
+    Yul->>Yul: Check final balance >= initial balance + minProfit
+    alt Profit below minProfit
+        Yul-->>Mempool: revert(0, 0)
+    else Profit covers minProfit
+        Yul-->>Mempool: Profit stays in the executor
     end
 ```
 

@@ -4,6 +4,10 @@
 > things happen — retrospectives need this raw material to land.
 > Reverse-chronological; one paragraph max per entry.
 
+## 2026-10-19: Relabel the MEV sequence diagram #decision
+
+The sequence in `docs/MEV_ENGINEERING.md` named the mempool scanner as the caller. The scanner only logs opportunities, so the caller is now the bot's transaction, and the outcome labels match the README's guard figure.
+
 ## 2026-10-19: Redraw the arbitrage figure around the profit guard #decision
 
 The old figure showed a Flashbots relay path the bot does not run yet (submission is still simulated on a forked node), squeezed a truncated formula into a box, and used green and red for pass and fail. The new one shows the bot steps, the two executor swaps, and the `minProfit` check with keep and revert outcomes, checked against `bot/src` and `Executor.yul`.
