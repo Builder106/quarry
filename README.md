@@ -25,12 +25,14 @@ Quarry operates as a hybrid MEV arbitrage engine. A TypeScript scanner watches E
 
 ## How it works
 
+The executor keeps a trade only when its own balance grows by at least `minProfit`. Otherwise the transaction reverts and neither swap takes effect.
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/diagrams/arbitrage-flow-dark.png">
-  <img src="assets/diagrams/arbitrage-flow.png" alt="Quarry arbitrage scoring and guarded execution">
+  <img src="assets/diagrams/arbitrage-flow.png" alt="Off-chain, the bot decodes a pending swap, sizes the trade, and signs a transaction. On-chain, the executor swaps on the victim pool, then on the counter pool, then checks whether its profit covers minProfit. If it does, it keeps the profit. If not, it reverts and both swaps are undone." width="880">
 </picture>
 
-The scanner decodes a pending swap, reads both pools through Multicall3, and scores the post-victim reserves. A signed EIP-1559 bundle sends packed 220-byte calldata to the Yul executor. The executor swaps on the victim pool with `to=Pool2`, then swaps on the counter pool with `to=this`. The call returns profit only if the final balance covers `minProfit`; otherwise it reverts. [Editable HTML source](assets/diagrams/arbitrage-flow.html).
+The scanner decodes a pending Uniswap V2 swap, reads both pools through Multicall3, and sizes the trade with a closed-form solver. A signed EIP-1559 transaction carries 220 bytes of packed calldata to the Yul executor, which swaps on the victim pool with `to=Pool2` and then on the counter pool with `to=this`. [Editable HTML source](assets/diagrams/arbitrage-flow.html).
 
 The executor is built in monolithic Yul bytecode without heavy framework overhead. Data is read directly as a tightly packed byte string. Pool 1's output flows directly to pool 2 (a classic decentralized exchange optimization where tokens transfer straight between liquidity pools, skipping intermediate transfers to save transaction fees). A balance snapshot at entry and exit guards the trade: if the price difference disappears before the transaction completes, the entire transaction cancels automatically with zero loss of funds.
 

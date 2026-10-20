@@ -4,6 +4,10 @@
 > things happen — retrospectives need this raw material to land.
 > Reverse-chronological; one paragraph max per entry.
 
+## 2026-10-19: Redraw the arbitrage figure around the profit guard #decision
+
+The old figure showed a Flashbots relay path the bot does not run yet (submission is still simulated on a forked node), squeezed a truncated formula into a box, and used green and red for pass and fail. The new one shows the bot steps, the two executor swaps, and the `minProfit` check with keep and revert outcomes, checked against `bot/src` and `Executor.yul`.
+
 ## 2026-10-13: Replaced README Mermaid diagrams #decision
 
 The README now separates off-chain scoring from on-chain execution in a PNG figure with editable HTML source. The two DEX pools and profit guard remain explicit; adjacent text carries the bundle and return-path details that would crowd the diagram.
