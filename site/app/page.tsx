@@ -8,7 +8,7 @@ const DEMO_GIF_URL = '/demo.gif';
 const SAMPLES = [
   {
     depth: '02',
-    figure: '188',
+    figure: '492',
     unit: 'B',
     label: 'Runtime bytecode',
     note: 'vs. 1.5–3 KB for a Solidity equivalent of the same dual-entry contract.',
@@ -294,7 +294,7 @@ export default function Home() {
                 candidate it back-computes the price the victim will leave behind, runs a
                 closed-form optimal-input solver, and — if the round-trip profit clears fees and gas
                 — signs an EIP-1559 transaction that borrows from Aave V3 and routes through a{' '}
-                <span className="text-[var(--color-ore)] font-medium">188-byte Yul executor</span>.
+                <span className="text-[var(--color-ore)] font-medium">492-byte Yul executor</span>.
               </p>
 
               <p className="mt-5 text-[var(--color-dust)] max-w-2xl">
@@ -567,7 +567,7 @@ export default function Home() {
             />
             <div className="relative">
               <h2 className="display text-5xl md:text-7xl text-[var(--color-chalk)] max-w-3xl">
-                188 bytes of Yul.
+                492 bytes of Yul.
                 <span className="block text-[var(--color-ore)]">110k gas on real pools.</span>
               </h2>
               <p className="mt-6 text-[var(--color-dust)] max-w-2xl leading-relaxed">

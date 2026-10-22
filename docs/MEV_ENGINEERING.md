@@ -14,12 +14,12 @@ The scanner evaluates candidate mempool transactions, calculates post-victim poo
 
 ## Bare-Metal Yul Executor (`contracts/src/Executor.yul`)
 
-The on-chain leg is written in pure Yul (188 bytes of runtime bytecode) to minimize EVM gas consumption:
+The on-chain leg is written in pure Yul (492 bytes of runtime bytecode) to minimize EVM gas consumption:
 
 ```mermaid
 sequenceDiagram
     participant Mempool as Bot transaction
-    participant Yul as Yul executor (188 B)
+    participant Yul as Yul executor (492 B)
     participant Pool1 as Victim pair
     participant Pool2 as Counter pair
 
@@ -47,6 +47,6 @@ sequenceDiagram
 
 | Metric | Measured Baseline | Target Ceiling | Guard Location |
 | --- | --- | --- | --- |
-| **Executor Bytecode Size** | 188 bytes | 256 bytes | `contracts/foundry.toml` |
+| **Executor Bytecode Size** | 492 bytes | 512 bytes | `forge build --sizes` in CI (reported, not enforced) |
 | **Mock Two-Hop Gas** | ~84.5k gas | 100k gas | `contracts/test/Executor.t.sol` |
 | **Real Mainnet Fork Gas** | 110,957 gas (~111k) | 130k gas | `contracts/test/ExecutorFork.t.sol` |

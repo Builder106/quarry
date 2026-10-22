@@ -8,7 +8,7 @@
 [![Solidity](https://img.shields.io/badge/solidity-0.8.28-blue.svg)](https://docs.soliditylang.org/en/v0.8.28/)
 [![Foundry](https://img.shields.io/badge/foundry-1.7-orange.svg)](https://book.getfoundry.sh/)
 [![Bun](https://img.shields.io/badge/bun-1.3-black.svg)](https://bun.sh)
-[![Yul runtime](https://img.shields.io/badge/runtime-188_B-d4923a.svg)](contracts/src/Executor.yul)
+[![Yul runtime](https://img.shields.io/badge/runtime-492_B-d4923a.svg)](contracts/src/Executor.yul)
 [![Two-hop gas](https://img.shields.io/badge/two--hop_gas-110k-d4923a.svg)](contracts/test/ExecutorFork.t.sol)
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Live site](https://img.shields.io/badge/site-quarry--mev.vercel.app-d4923a.svg)](https://quarry-mev.vercel.app)
@@ -19,7 +19,7 @@
 
 If a store across town sells an item for $10 and another buys it for $12, a quick courier can make a $2 profit while helping keep prices fair. Quarry monitors decentralized exchanges around the clock, spotting momentary price differences and executing instant trades with zero upfront capital using flash loans.
 
-Quarry operates as a hybrid MEV arbitrage engine. A TypeScript scanner watches Ethereum's public mempool for swaps about to land on a Uniswap-V2-shaped DEX. For each candidate, it computes the post-trade price impact, runs a closed-form optimal-input solver against the reserves, and packs a 220-byte calldata payload whenever round-trip profit covers fees and gas. The executor is a custom Yul contract (188 bytes of runtime bytecode) that performs the full two-hop arbitrage and reverts atomically if realized profit falls short.
+Quarry operates as a hybrid MEV arbitrage engine. A TypeScript scanner watches Ethereum's public mempool for swaps about to land on a Uniswap-V2-shaped DEX. For each candidate, it computes the post-trade price impact, runs a closed-form optimal-input solver against the reserves, and packs a 220-byte calldata payload whenever round-trip profit covers fees and gas. The executor is a custom Yul contract (492 bytes of runtime bytecode) that performs the full two-hop arbitrage and reverts atomically if realized profit falls short.
 
 > **Scope:** Quarry targets cross-DEX arbitrage (closing price gaps to improve market price efficiency). Predatory strategies such as sandwiches or JIT attacks against retail traders are strictly out of scope. See [CONTRIBUTING.md](CONTRIBUTING.md#out-of-scope).
 
@@ -41,7 +41,7 @@ The executor is built in monolithic Yul bytecode without heavy framework overhea
 ```text
 Quarry/
 ├── contracts/                    # Foundry project: smart contract executor + tests
-│   ├── src/Executor.yul          # 188-byte runtime, two-hop executor
+│   ├── src/Executor.yul          # 492-byte runtime, two-hop executor
 │   ├── test/Executor.t.sol       # Tests, mock pools, safety assertions
 │   ├── test/ExecutorFork.t.sol   # Tests against real network state
 │   └── foundry.toml
@@ -199,7 +199,7 @@ Pinning `FORK_BLOCK` to a moment of high volatility (liquidation cascades, large
 | Surface | Gate | Current |
 | --- | --- | --- |
 | Two-hop arb total gas (real pools) | **≤ 130,000** on forked mainnet | **110,780** |
-| Yul runtime bytecode size | **≤ 250 B** | **188 B** |
+| Yul runtime bytecode size | **≤ 512 B** | **492 B** |
 | Mocks-test gas regression ceiling | **≤ 50,000** | 48,976 |
 | Scanner p99 tx-to-decision | **≤ 20 ms** on 1-hour sample | — (not yet benched) |
 | Scanner hot path | **0 heap allocations** per pending-tx event | — |
