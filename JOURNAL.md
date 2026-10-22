@@ -4,6 +4,10 @@
 > things happen — retrospectives need this raw material to land.
 > Reverse-chronological; one paragraph max per entry.
 
+## 2026-10-22: Banner is now a hex dump of the real runtime #decision
+
+The old banner had a stale "188 B runtime" chip and a bytecode caption from before the flashloan entry point, which grew the runtime to 492 B. Its layout (glowing gradient hexagon, corner tag, pipe-separated claim chips) was generic, and the ore seam crossed the tagline. GitHub also rendered the wordmark in Helvetica because an SVG `<img>` can't load Big Shoulders. The new banner prints all 492 bytes as a hex dump, with CALL/STATICCALL in gold and the one shared REVERT in red, and every glyph is outlined to paths. `assets/generate-banner.py` builds it from the forge artifact, so rerun it whenever `Executor.yul` changes. The light variant moved off cream to neutral `#f4f4f4`.
+
 ## 2026-10-19: Relabel the MEV sequence diagram #decision
 
 The sequence in `docs/MEV_ENGINEERING.md` named the mempool scanner as the caller. The scanner only logs opportunities, so the caller is now the bot's transaction, and the outcome labels match the README's guard figure.
