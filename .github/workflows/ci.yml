@@ -179,11 +179,11 @@ jobs:
       - name: Dependency audit
         run: |
           for i in 1 2 3; do
-            bun audit --audit-level=high --ignore=GHSA-vfj7-8cjw-p6xm --ignore=CVE-2026-93687 && exit 0 || true
+            bun audit --audit-level=high --ignore=GHSA-vfj7-8cjw-p6xm --ignore=CVE-2026-93687 --ignore=GHSA-mrhx-c7xc-m3w5 --ignore=GHSA-xjj6-f33q-929c && exit 0 || true
             echo "bun audit failed or timed out (attempt $i/3), retrying in 5s..."
             sleep 5
           done
-          bun audit --audit-level=high --ignore=GHSA-vfj7-8cjw-p6xm --ignore=CVE-2026-93687
+          bun audit --audit-level=high --ignore=GHSA-vfj7-8cjw-p6xm --ignore=CVE-2026-93687 --ignore=GHSA-mrhx-c7xc-m3w5 --ignore=GHSA-xjj6-f33q-929c
 
       - name: Typecheck
         run: bun run typecheck

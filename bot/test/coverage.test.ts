@@ -52,9 +52,9 @@ describe('reserves.ts coverage', () => {
 
     const res = await fetchReserves(mockClient, tokenA, tokenB, ['uniswap-v2', 'sushiswap']);
     expect(res.length).toBe(1);
-    expect(res[0].dex).toBe('uniswap-v2');
-    expect(res[0].reserve0).toBe(1000n);
-    expect(res[0].reserve1).toBe(2000n);
+    expect(res[0]!.dex).toBe('uniswap-v2');
+    expect(res[0]!.reserve0).toBe(1000n);
+    expect(res[0]!.reserve1).toBe(2000n);
   });
 });
 
