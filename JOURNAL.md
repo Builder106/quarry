@@ -4,6 +4,10 @@
 > things happen — retrospectives need this raw material to land.
 > Reverse-chronological; one paragraph max per entry.
 
+## 2026-10-27: Keep Bun CI installs on the checked-in locks #ci #decision
+
+Each Bun job now installs from its workspace lockfile in frozen mode, so CI fails when a manifest and lockfile disagree.
+
 ## 2026-10-23: Add typed API checks #ci #decision
 
 The bot and site now use typed ESLint checks for deprecated APIs and reject explicit `any`. Production source also blocks explicit `unknown` outside validated data and error boundaries.
