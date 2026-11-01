@@ -2,7 +2,7 @@
   "name": "quarry-bot",
   "version": "0.0.1",
   "private": true,
-  "description": "Off-chain mempool scanner for Quarry \u2014 pairs with the Yul executor in ../contracts",
+  "description": "Off-chain mempool scanner for Quarry — pairs with the Yul executor in ../contracts",
   "type": "module",
   "scripts": {
     "scanner": "bun run src/scanner.ts",
@@ -17,20 +17,21 @@
     "format:fix": "prettier --write ."
   },
   "dependencies": {
-    "viem": "^2.57.11"
+    "viem": "^2.57.4"
   },
   "devDependencies": {
     "@eslint/js": "^10.0.1",
-    "@types/bun": "^1.4.4",
+    "@types/bun": "^1.4.2",
     "@typescript/native": "npm:typescript@^7.0.2",
-    "eslint": "^10.13.0",
+    "eslint": "^10.12.0",
     "eslint-config-prettier": "^10.0.1",
     "prettier": "^3.9.10",
     "prettier-plugin-organize-imports": "^4.1.0",
     "typescript": "npm:@typescript/typescript6@6.0.2",
-    "typescript-eslint": "^8.72.0"
+    "typescript-eslint": "^8.71.1"
   },
   "resolutions": {
-    "brace-expansion": "^5.0.12"
+    "brace-expansion": "^5.0.12",
+    "minimatch": "^11.0.1"
   }
 }
