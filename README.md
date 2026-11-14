@@ -17,7 +17,7 @@
 
 ## 💡 What is Quarry?
 
-If a store across town sells an item for $10 and another buys it for $12, a quick courier can make a $2 profit while helping keep prices fair. Quarry monitors decentralized exchanges around the clock, spotting momentary price differences and executing instant trades with zero upfront capital using flash loans.
+If one store sells an item for $10 and another buys it for $12, a courier could profit from the difference. Quarry monitors decentralized exchanges for temporary price differences and uses flash loans to execute trades without upfront capital.
 
 Quarry operates as a hybrid MEV arbitrage engine. A TypeScript scanner watches Ethereum's public mempool for swaps about to land on a Uniswap-V2-shaped DEX. For each candidate, it computes the post-trade price impact, runs a closed-form optimal-input solver against the reserves, and packs a 220-byte calldata payload whenever round-trip profit covers fees and gas. The executor is a custom Yul contract (492 bytes of runtime bytecode) that performs the full two-hop arbitrage and reverts atomically if realized profit falls short.
 
@@ -34,7 +34,7 @@ The executor keeps a trade only when its own balance grows by at least `minProfi
 
 The scanner decodes a pending Uniswap V2 swap, reads both pools through Multicall3, and sizes the trade with a closed-form solver. A signed EIP-1559 transaction carries 220 bytes of packed calldata to the Yul executor, which swaps on the victim pool with `to=Pool2` and then on the counter pool with `to=this`. [Editable HTML source](assets/diagrams/arbitrage-flow.html).
 
-The executor is built in monolithic Yul bytecode without heavy framework overhead. Data is read directly as a tightly packed byte string. Pool 1's output flows directly to pool 2 (a classic decentralized exchange optimization where tokens transfer straight between liquidity pools, skipping intermediate transfers to save transaction fees). A balance snapshot at entry and exit guards the trade: if the price difference disappears before the transaction completes, the entire transaction cancels automatically with zero loss of funds.
+The executor is built as a single Yul contract and reads data directly from a tightly packed byte string. Pool 1 sends its output directly to pool 2, skipping an intermediate token transfer to save gas. A balance snapshot at entry and exit guards the trade: if the price difference disappears before the transaction completes, the transaction reverts.
 
 ## Repo layout
 

@@ -38,7 +38,7 @@ Updated the README headline, summary tagline, and introductory section to explai
 
 ## 2026-08-07 — MEV engineering specification and codebase feature audit #milestone
 
-Completed a full feature and benchmark audit across the Yul executor (`contracts/`), TypeScript mempool scanner (`bot/`), and Core Sample site (`site/`). Authored `docs/MEV_ENGINEERING.md` documenting the closed-form optimal input equation, Yul direct pair-to-pair gas optimizations, raw calldata unpacking, and gas benchmark ceilings (~111k gas baseline vs 130k ceiling). Added 3-hop triangular Yul execution routes and interactive mempool simulation site components to the roadmap.
+Audited features and benchmarks across the Yul executor (`contracts/`), TypeScript mempool scanner (`bot/`), and Core Sample site (`site/`). Added `docs/MEV_ENGINEERING.md` to document the closed-form optimal input equation, Yul direct pair-to-pair gas optimizations, raw calldata unpacking, and gas benchmark ceilings (~111k gas baseline vs 130k ceiling). Added 3-hop triangular Yul execution routes and interactive mempool simulation site components to the roadmap.
 
 ## 2026-06-13 — Visual identity unified to "Core Sample" (favicon + banner) #decision
 
@@ -46,7 +46,7 @@ The site got its "Core Sample" redesign (earth-toned mine-shaft palette, ore-gol
 
 ## 2026-06-13 — site/ got its first tests #milestone
 
-The Next.js `site/`had no test framework at all (no`test`script, no specs) and no CI job. Added Vitest + Testing Library (jsdom) and a real component test for`DepthMeter`— the`"use client"`scroll-depth indicator: asserts the surface/zero-padded start state and that scroll progress maps to the right metres + stratum band (SHALE at 50%, BEDROCK near the bottom), driving it by overriding jsdom's read-only`scrollY`/`scrollHeight`/`innerHeight`. Deliberately avoided jest-dom matchers (plain DOM assertions) so `tsc --noEmit`stays green with no extra type plumbing. Wired a`site (bun · vitest)`job into CI alongside`contracts`and`bot`. 3 tests green, typecheck green.
+The Next.js `site/` had no test framework (no `test` script or specs) and no CI job. Added Vitest + Testing Library (jsdom) and a component test for `DepthMeter`, the `"use client"` scroll-depth indicator. The test checks the surface/zero-padded start state and that scroll progress maps to the right metres and stratum band (SHALE at 50%, BEDROCK near the bottom), overriding jsdom's read-only `scrollY`/`scrollHeight`/`innerHeight` to drive it. Used plain DOM assertions instead of jest-dom matchers so `tsc --noEmit` stays green without extra type plumbing. Added a `site (bun · vitest)` CI job alongside `contracts` and `bot`. Three tests and typecheck passed.
 
 ## 2026-06-13 — Gas perf-guard docs were a three-way contradiction #incident
 
@@ -66,7 +66,7 @@ Two readings: the prey a predator hunts (mempool victim transactions in the "dar
 
 ## 2026-05-27 — Architecture: contracts/ + bot/ monorepo, no lerna/turbo #decision
 
-Top-level `contracts/`(Foundry, Yul + Solidity tests) and`bot/` (TypeScript, bun runtime) as siblings. No workspace tooling — they communicate via deployed contract address + ABI only, never share TS types. **Why:**the on-chain and off-chain code have orthogonal toolchains (forge vs. bun) and orthogonal release cadences (a Yul contract is deployed once and frozen; the bot iterates daily).**How to apply:** when adding shared code (e.g. pool-address constants), prefer code generation from a single TOML config over a shared TS package — keeps the two trees independent.
+The top-level `contracts/` (Foundry, Yul + Solidity tests) and `bot/` (TypeScript, bun runtime) directories are siblings without workspace tooling. They communicate through deployed contract addresses and ABIs, and don't share TS types. Their toolchains and release cadences differ: a Yul contract is deployed once and frozen, while the bot iterates daily. For shared values such as pool-address constants, prefer code generation from one TOML config over a shared TS package, keeping the two trees independent.
 
 ## 2026-05-27 — Canonical site URL is now quarry-mev.vercel.app #decision
 
@@ -97,21 +97,21 @@ Two papercuts captured for next time:
 
 ## 2026-05-27 — Historical-arb replay script lands #milestone
 
-`bot/scripts/historical-replay.ts` (`bun run replay`) closes the last item on the V0 punch list. Reads UniV2 + Sushi WETH/USDC reserves at whatever block anvil is forked at, runs the bot's standing-arb math (`getOptimalInput`from`amm.ts`) in both possible round-trip directions (sell-on-UniV2 / sell-on-Sushi), and either:
+`bot/scripts/historical-replay.ts` (`bun run replay`) closes the last item on the V0 punch list. It reads UniV2 + Sushi WETH/USDC reserves at the block where anvil is forked and runs the bot's standing-arb math (`getOptimalInput` from `amm.ts`) in both round-trip directions (sell-on-UniV2 / sell-on-Sushi). It then either:
 
 - **executes the better direction via Aave V3 flashloan** when a real profitable gap exists, then asserts realized matches predicted; or
 - **prints a diagnostic gap analysis** showing each direction's probe-input round-trip output and predicted loss-to-fees, exiting 0 — "no opportunity" is not a failure.
 
 At HEAD (block 25189150 during this run): UniV2 implied price 2,056.89 USDC/WETH vs Sushi 2,055.57. Cross-DEX gap of 0.060% — well under the 0.60% combined round-trip fee floor. Both directions show a ~2.1% gross loss on a 1-WETH probe (0.60% fees + ~1.5% adverse slippage on Sushi's depleted WETH reserve of ~62 WETH). Diagnostic exits cleanly with an explanation pointing the user toward archival RPC + high-volatility blocks for an actual historical replay.
 
-The script reuses the existing `getAmountOut`, `getOptimalInput`(amm.ts),`buildFlashloanCall`(bundle.ts), and`fetchChainFees`+`signExecutorTx` (sign.ts) — same primitives demo.ts uses, just without the synthetic victim swap. ~280 lines of TS total, no new src/ files needed.
+The script reuses `getAmountOut`, `getOptimalInput` (amm.ts), `buildFlashloanCall` (bundle.ts), and `fetchChainFees` + `signExecutorTx` (sign.ts). These are the same primitives demo.ts uses, without the synthetic victim swap. It takes ~280 lines of TS and needs no new src/ files.
 
-The framing is honest about what's possible without archival access:
+What the script can show depends on the RPC access available:
 
 - *At HEAD*: educational gap-analysis tool that demonstrates the bot's math against real chain state.
 - *With archival RPC + a pinned `--fork-block-number`*: actual historical-arb replay that proves the bot would have caught a specific past opportunity.
 
-The latter requires an Alchemy / Infura / dedicated-node URL — free public RPCs don't keep historical state beyond ~128 blocks. Documented in the README's Demo section + this entry.
+The latter requires an Alchemy / Infura / dedicated-node URL; free public RPCs don't keep historical state beyond ~128 blocks. This is documented in the README's Demo section and here.
 
 V0 is complete. From here, follow-up work is either expanding scope (multi-hop paths, ETH-side variants, WETH/non-WETH base gas gate) or refining presentation (sponsor track wiring, screen-recorded portfolio video, blog post on the bare-metal Yul advantage).
 
@@ -148,7 +148,7 @@ Reroll recipe for future-me — if the demo output changes:
 
 ## 2026-05-27 — V3 executor: Aave V3 flashloan integration, inventory-free bot #milestone
 
-The bot now runs with zero inventory. `Executor.yul`grows a second entry point —`executeOperation(address,uint256,uint256,address,bytes)`— that dispatches on the function selector`0x1b11d0ff`. Same Yul object, single contract; the V2 direct path stays untouched and tested. Shared swap orchestration extracted into a Yul `function runSwaps(pool1, pool2, a0p1, a1p1, a0p2, a1p2)`so both entry points use the same code, plus`erc20BalanceOf`, `erc20Transfer`, `erc20Approve` helpers. Runtime grew from 188 → 492 bytes — still a tiny contract by any measure, and a Solidity equivalent of the dual-entry version would land at well over 1.5 KB.
+The bot now runs with zero inventory. `Executor.yul` has a second entry point, `executeOperation(address,uint256,uint256,address,bytes)`, dispatched by the function selector `0x1b11d0ff`. Both entry points remain in one Yul object and contract; the V2 direct path stays untouched and tested. Shared swap orchestration moved into `function runSwaps(pool1, pool2, a0p1, a1p1, a0p2, a1p2)`, with `erc20BalanceOf`, `erc20Transfer`, and `erc20Approve` helpers. Runtime grew from 188 → 492 bytes; a Solidity equivalent of the dual-entry version would land at well over 1.5 KB.
 
 The flashloan path:
 
@@ -249,11 +249,11 @@ First end-to-end run reverted with `UniswapV2: K`on leg 1, even with perfectly a
 
 ## 2026-05-27 — Bundle assembly: scored arb → Flashbots-shaped JSON-RPC payload #milestone
 
-Two new modules close the off-chain side: `bot/src/bundle.ts`builds the 220-byte packed executor calldata from a`ScoredArb`and wraps signed transactions in the Flashbots envelope;`bot/src/sign.ts`signs EIP-1559 transactions locally via`privateKeyToAccount`(no RPC needed for signing itself — fees and nonce come from outside via`fetchChainFees`). `buildBundlePayload`, `toJsonRpcRequest`, and `toCallBundleRequest` cover both the production submission shape (`eth_sendBundle`) and the simulation shape (`eth_callBundle`with`stateBlockNumber`). Caller composes the pieces: score → calldata → sign → wrap → submit.
+Two new modules complete the off-chain assembly path. `bot/src/bundle.ts` builds the 220-byte packed executor calldata from a `ScoredArb` and wraps signed transactions in the Flashbots envelope. `bot/src/sign.ts` signs EIP-1559 transactions locally via `privateKeyToAccount`; signing itself needs no RPC, while fees and nonce come from outside via `fetchChainFees`. `buildBundlePayload`, `toJsonRpcRequest`, and `toCallBundleRequest` cover both the production submission shape (`eth_sendBundle`) and the simulation shape (`eth_callBundle` with `stateBlockNumber`). The caller composes the pieces: score → calldata → sign → wrap → submit.
 
 The bundle layout test pins seven byte ranges against the V2 executor's expectations: pool1 at 0..20, pool2 at 20..40, four uint256 amount slots at 40..168, tokenIn at 168..188, minProfit at 188..220, total 220 bytes. The amount-slot logic depends on Uniswap V2 token ordering (token0 is the lower address) — `intermediateIsToken0` is the single branch that fixes all four amount slots for both legs. Two tests exercise both branches (USDC-base + WETH-intermediate, then the flip).
 
-`ScoredArb`grew an`intermediateOut: bigint`field — the amount of intermediateToken pool1 sends directly to pool2 in the executor's bundle. The bundle builder needs this to populate the amount slot that corresponds to the intermediate token.`scoreFromRawReserves`computes it as a single extra`getAmountOut`call alongside the existing`quoteOptimalArb`.
+`ScoredArb` gained an `intermediateOut: bigint` field: the amount of intermediateToken pool1 sends directly to pool2 in the executor's bundle. The bundle builder uses it to populate the intermediate token's amount slot. `scoreFromRawReserves` computes it with one extra `getAmountOut` call alongside the existing `quoteOptimalArb`.
 
 Two papercuts captured for future-me. (1) viem's `encodePacked`strictly validates EIP-55 checksums on Address arguments, so synthetic test addresses like`0xAAAAaaaA…`are rejected unless they happen to be valid checksums. Lowering them sidesteps the issue — viem treats all-lowercase as "no checksum claim." Real mainnet addresses (WETH, USDC) carry valid checksums already, so this only bites in tests. (2) viem's`parseTransaction`returns`value: undefined`for zero-value txs, not`value: 0n`. Use `?? 0n` if you want a default. Trivial-once-known, costs five minutes if not.
 
@@ -271,7 +271,7 @@ V1 ideas that fall out of this naturally: (a) WETH/baseToken conversion via a th
 
 ## 2026-05-27 — Back-run scoring: simulate the victim, then close the gap #milestone
 
-Scoring shifts from "standing arb monitor" to "back-run engine." Old logic asked "is there a price gap between these two pools right now?" — the answer is almost always no, because real arbs close within a block. New logic asks "given that the victim's swap is about to land on DEX X, will the price gap it *creates* be big enough to back-run profitably against DEX Y?" That's the load-bearing MEV pattern.
+Scoring now models a back-run instead of looking only for a standing arbitrage. The old logic checked for a price gap between two pools right now; real arbitrage opportunities usually close within a block. The new logic asks whether a pending swap on DEX X will create a gap large enough to back-run profitably against DEX Y.
 
 Pipeline change is one function: `scoreFromRawReserves(swap, victimDex, raw)`now applies`getAmountOut(swap.amountIn, victimOriented.reserveIn, victimOriented.reserveOut)`to the victim DEX's reserves first, computes`postVictimAReserve = R + amountIn`and`postVictimBReserve = R - victimOut`, and runs `quoteOptimalArb(leg1, leg2)`where`leg1`is the victim's pool in the *reverse* trade direction (B → A, at the post-victim rate) and`leg2` is the unchanged counter DEX (A → B). Profit is measured in B — the token the victim received and which got more expensive on the victim's pool. The direction is deterministic now; no solver-picked direction, no two-direction loop.
 
@@ -298,7 +298,7 @@ V0 scope, captured here so I don't pretend the scanner is finished: (a) only fir
 
 ## 2026-05-27 — Scanner brain: AMM math + calldata decoder land #milestone
 
-The off-chain side now has a brain. `bot/src/amm.ts`exports`getAmountOut`, `getOptimalInput`, `quoteRoundTrip`, and `quoteOptimalArb`— the constant-product-with-fee math plus the closed-form solver for two-hop cross-DEX optimal input.`bot/src/decode.ts` decodes the four Uniswap V2 router methods that account for >95% of public-mempool swap volume (`swapExactTokensForTokens`, `swapExactETHForTokens`, `swapExactTokensForETH`, `swapTokensForExactTokens`) and exports a known-router registry so the scanner can filter at the `tx.to`level before paying the cost of decode.`bot/src/scanner.ts`is updated to wire the pipeline end-to-end: WS pending-tx subscription →`getTransaction`→ router filter → decode → log. 21 Bun tests green (including a local-maximum property check on the optimal-input solver, an end-to-end round-trip via viem's`encodeFunctionData`, and a verification that the bigint `isqrt` floor matches the spec for all inputs in [0, 1000)).
+The scanner now has AMM math and a calldata decoder. `bot/src/amm.ts` exports `getAmountOut`, `getOptimalInput`, `quoteRoundTrip`, and `quoteOptimalArb`: constant-product-with-fee math and a closed-form solver for two-hop cross-DEX optimal input. `bot/src/decode.ts` decodes the four Uniswap V2 router methods that account for >95% of public-mempool swap volume (`swapExactTokensForTokens`, `swapExactETHForTokens`, `swapExactTokensForETH`, `swapTokensForExactTokens`). It also exports a known-router registry so the scanner can filter at the `tx.to` level before decoding. `bot/src/scanner.ts` connects the pipeline: WS pending-tx subscription → `getTransaction` → router filter → decode → log. All 21 Bun tests pass, including a local-maximum property check on the solver, an end-to-end round-trip via viem's `encodeFunctionData`, and a check that the bigint `isqrt` floor matches the spec for all inputs in [0, 1000).
 
 ## 2026-05-27 — Optimal-input formula had two transcription bugs #incident
 
@@ -332,11 +332,11 @@ Tests: 6 green, including a 256-run fuzz that asserts `profit == payout`when pay
 
 ## 2026-05-27 — Foundry's solar lint doesn't understand Yul objects #incident
 
-Foundry 1.7's new Rust-based linter (solar) treats `.yul`files as if they were Solidity and errors on`object "QuarryExecutor"`("expected identifier, found`<string>`"). Setting `[lint] lint_on_build = false`in`foundry.toml`stops it from gating builds, but the warning still prints to stderr on both`forge build`and`forge test`. The exit code is 0, so it's cosmetic. **How to apply:** when solar grows Yul support upstream, re-enable lint and drop the toml flag — track Foundry release notes for the keyword "yul lint".
+Foundry 1.7's new Rust-based linter (solar) treats `.yul` files as Solidity and errors on `object "QuarryExecutor"` ("expected identifier, found `<string>`"). Setting `[lint] lint_on_build = false` in `foundry.toml` stops it from gating builds, but the warning still prints to stderr on both `forge build` and `forge test`. The exit code is 0, so it's cosmetic. When solar supports Yul, re-enable lint and drop the toml flag; track Foundry release notes for "yul lint".
 
 ## 2026-05-27 — vm.getCode rejects Yul artifacts; read the JSON directly #incident
 
-`vm.getCode("Executor.yul:QuarryExecutor")`returns "invalid type: null, expected a valid JSON ABI sequence" because Foundry's parser eagerly reads the artifact's`abi`field, which is`null`for pure-Yul outputs. Worked around it by reading the artifact JSON with`vm.readFile`and extracting`.bytecode.object`via`vm.parseJsonBytes`. **How to apply:** every Yul-loaded test in this repo uses the readFile path. If a Foundry update fixes vm.getCode for Yul artifacts, simplify back — but don't conditionally branch; pick one path.
+`vm.getCode("Executor.yul:QuarryExecutor")` returns "invalid type: null, expected a valid JSON ABI sequence" because Foundry's parser eagerly reads the artifact's `abi` field, which is `null` for pure-Yul outputs. The workaround reads the artifact JSON with `vm.readFile` and extracts `.bytecode.object` via `vm.parseJsonBytes`. Every Yul-loaded test in this repo uses that path. If a Foundry update fixes vm.getCode for Yul artifacts, switch back to one path rather than adding a conditional branch.
 
 ## 2026-05-27 — Foundry installed via brew, not foundryup #decision
 

@@ -1,6 +1,6 @@
 # Quarry Roadmap
 
-Next steps and architectural milestones for the Quarry MEV arbitrage engine and Yul executor.
+Next steps for the Quarry MEV arbitrage engine and Yul executor.
 
 ## v0.2 — Multi-Hop & Transaction Expansion
 

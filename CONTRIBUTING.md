@@ -1,7 +1,7 @@
 # Contributing to Quarry
 
 Quarry is a personal portfolio project. PRs from outside contributors are
-welcome but the scope is tight — read this first to avoid wasted work.
+welcome. Please check the scope before starting work.
 
 ## Project scope
 
@@ -40,7 +40,7 @@ opcode shaved off the on-chain leg widens the marginal profit envelope.
 Prerequisites:
 
 - macOS or Linux
-- Foundry (`brew install foundry`on macOS; otherwise`foundryup`)
+- Foundry (`brew install foundry` on macOS; otherwise `foundryup`)
 - Bun ≥ 1.3 (`brew install oven-sh/bun/bun`)
 - Node ≥ 22 (only for `pnpm`-installed dev deps; runtime is Bun)
 
@@ -79,11 +79,11 @@ bytecode.
 
 | Command | What it does |
 | --- | --- |
-| `forge build`(in`contracts/`) | Compiles Solidity + Yul, emits artifacts to `out/` |
-| `forge test -vvv`| Runs Solidity tests against the Yul contract;`-vvv` shows traces |
+| `forge build` (in `contracts/`) | Compiles Solidity + Yul, emits artifacts to `out/` |
+| `forge test -vvv` | Runs Solidity tests against the Yul contract; `-vvv` shows traces |
 | `forge test --gas-report` | Emits a per-function gas snapshot — gate against regression |
-| `forge snapshot`| Writes`.gas-snapshot` checked into git |
-| `bun run typecheck`(in`bot/`) | Strict TS typecheck, no emit |
+| `forge snapshot` | Writes `.gas-snapshot` checked into git |
+| `bun run typecheck` (in `bot/`) | Strict TS typecheck, no emit |
 | `bun test` | Runs the scanner unit tests |
 | `bun run scanner` | Starts the WebSocket mempool scanner |
 
@@ -139,7 +139,7 @@ bytecode.
 
 1. Branch from `main`. Branch names: `area/short-description`.
 2. PR title matches the would-be merge commit message.
-3. PR body has a **Why**section (one paragraph) and a**What changed**
+3. PR body has a **Why** section (one paragraph) and a **What changed**
 
    section (bullet list). No emoji headers, no AI-slop checklists.
 

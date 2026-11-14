@@ -1,6 +1,6 @@
 # Quarry MEV Engineering & Yul Optimization Specification
 
-This document details the mathematical model, off-chain mempool scanner architecture, and low-level Yul EVM bytecode optimizations implemented in Quarry.
+This document describes Quarry's mathematical model, off-chain mempool scanner, and low-level Yul EVM bytecode optimizations.
 
 ## AMM Arbitrage Math & Closed-Form Optimal Input
 
